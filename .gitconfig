@@ -1,0 +1,7 @@
+[alias]
+	lol = log --oneline --graph --decorate
+[user]
+	email = rajoo@mail.com
+	name = RiJo
+[push]
+	default = simple
