@@ -1,0 +1,53 @@
+array_push_unique(&$array, $var, $strict = true) Push a variable to an array, if not in there already
+array_cartesian($array) Generate an array of arrays, where the result is the cartesian products of the given items
+
+db_connect()
+db_disconnect($db)
+db_non_query($db, $sql, $insert = false)
+db_single_query($db, $sql)
+db_query($db, $sql)
+db_escape($db, $string)
+
+html_debug($data, $return = false) Dump the given data in formatted HTML
+is_html_tag($data) Evaluate if the given data is a valid tag structure
+html_is_tag($data, $element = null) Evaluate if the given data is a valid tag structure
+html_tag($element, $content = array(), $attributes = array()) Generate an HTML array tag
+html_add_content(&$tag, $content, $append = true, $use_associative = false) Append/merge content to an HTML array tag
+html_add_attributes(&$tag, $attributes) Append attribute(s) to an HTML array tag
+to_html($data, $add_doctype = false) Convert the HTML array tag to an HTML string
+to_html_escaped($data, $depth = 0) Convert the HTML array tag to an escaped HTML string
+
+html_sgen($string) Dynamic string to HTML generator, outputs HTML as string
+html_hgen($string) Dynamic string to HTML generator, outputs HTML as array tag
+html_link($content, $url, $attributes = null) Generate an HTML array tag for a link
+html_img($src, $alt = '', $tooltip = '', $link = '', $attributes = null) Generate an HTML array tag for an image
+html_list($data = null) Generate an HTML array tag for a list
+html_list_add_item(&$list, $data) Add item to HTML list tag
+html_table($data = null, $caption = null, $attributes = null) Generate an HTML array tag for a table
+html_table_set_caption(&$table, $caption) Set the caption of a HTML table tag
+html_table_add_header(&$table, $id = 'thead', $data = null, $head_attributes = null, $row_attributes = null, $col_attributes = null) Add header to HTML table tag
+html_table_add_row(&$table, $id = 'tbody', $data = null, $body_attributes = null, $row_attributes = null, $col_attributes = null) Add body row to HTML table tag
+html_table_add_footer(&$table, $id = 'tfoot', $data = null, $footer_attributes = null, $row_attributes = null, $col_attributes = null) Add footer to HTML table tag
+html_tag_add_class(&$tag, $class) Add class name to class attribute of an HTML array tag
+html_tag_set_id(&$tag, $id) Set id attribute of an HTML array tag
+html_from_text($text) Generate HTML code of the given text
+html_format($text) Formats the given text to HTML
+html_unformat($text) Formats the given HTML to plain text
+html_style($content) Generate an HTML array text containing stylesheet
+html_menu($data, $include_query = true) Generate an HTML array tag for a menu using lists
+html_form($action, $items = null, $attributes = null) Generate an HTML array tag for a form
+html_form_submit($name, $title, $icon = null, $attributes = null) Generate an HTML array tag for a form submit button
+html_form_checkbox($name, $title, $checked = false, $attributes = null) Generate an HTML array tag for a form checkbox
+html_form_text($name, $value = '', $max_length = -1, $attributes = null) Generate an HTML array tag for a form standard textbox
+html_form_textarea($name, $value = '', $attributes = null) Generate an HTML array tag for a form textarea
+html_form_password($name, $value = '', $attributes = null) Generate an HTML array tag for a form password textbox
+html_form_select($name, $items, $selected = array(), $multi_select = false, $group_by_name = false, $attributes = null) Generate an HTML array tag for a form select drop down
+
+handle_page_request($page_data, &$container, $data = array())
+
+unit_test($expected, $actual, $message = "") Add a new assertion unit test
+unit_test_cb($expected, $callback, $parameters, $message = "") Add new callback unit test
+unit_test_ex($callback, $parameters, $throw, $message = "") Add a new exception unit test
+unit_result($caption = null) Perform all tests and print out the result
+
+rc($id) Retrive global resource
