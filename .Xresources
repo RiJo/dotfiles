@@ -1,0 +1,118 @@
+!
+!	x t e r m
+!
+xterm*loginShell:						true
+!xterm*underLine:						on
+xterm*colorMode:						on
+xterm*colorBD:							lightyellow
+!xterm*colorBDMode:						false
+xterm*colorUL:							yellow
+xterm*colorULMode:						on
+xterm*dynamicColors:					true
+xterm*highlightSelection:				true
+xterm*selectToClipboard:				true
+xterm*scrollBar:						true
+xterm*rightScrollBar:					true
+xterm*scrollKey:						true
+xterm*scrollTtyOutput:					false
+xterm*jumpScroll:						true
+xterm*multiScroll:						true
+xterm*cursorBlink:						true
+xterm*borderwidth:						0
+!xterm*VT100.geometry:					80x25
+xterm*geometry: 						120x40
+xterm*saveLines:						32767
+xterm*utf8:								1
+xterm*renderFont:						true
+! cat /usr/share/fonts/terminus/fonts.dir
+xterm*boldFont:							*-terminus-bold-*-*-*-14-*
+xterm*font:								*-terminus-medium-*-*-*-14-*
+xterm*scrollKey:						true
+xterm*scrollTtyOutput:					false
+xterm*toolBar:							false
+
+!colors (http://mkaz.com/ref/xterm_colors.html) gray90=almost white
+xterm*background:						gray5
+xterm*foreground:						white
+xterm*cursorColor:						red4
+!black
+xterm*color0:							#333333
+xterm*color8:							#686868
+!red
+xterm*color1:							#CC0000
+xterm*color9:							#FF2222
+!green
+xterm*color2:							#ABCB8D
+xterm*color10:							#AFD78A
+!yellow
+xterm*color3:							#C48D62
+xterm*color11:							#E0A765
+!blue
+xterm*color4:							#8CA0B0
+xterm*color12:							#3D6A82
+!magenta
+xterm*color5:							#CC98E0
+xterm*color13:							#E1A2DC
+!cyan
+xterm*color6:							#44CACF
+xterm*color14:							#6CBFC4
+!white
+xterm*color7:							#E7E6DD
+xterm*color15:							#F0EFE7
+!
+!	x c a l c
+!
+xcalc*geometry:							200x275
+xcalc.ti.bevel.background:				#111111
+xcalc.ti.bevel.screen.background:		#000000
+xcalc.ti.bevel.screen.DEG.background:	#000000
+xcalc.ti.bevel.screen.DEG.foreground:	LightSeaGreen
+xcalc.ti.bevel.screen.GRAD.background:	#000000
+xcalc.ti.bevel.screen.GRAD.foreground:	LightSeaGreen
+xcalc.ti.bevel.screen.RAD.background:	#000000
+xcalc.ti.bevel.screen.RAD.foreground:	LightSeaGreen
+xcalc.ti.bevel.screen.INV.background:	#000000
+xcalc.ti.bevel.screen.INV.foreground:	Red
+xcalc.ti.bevel.screen.LCD.background:	#000000
+xcalc.ti.bevel.screen.LCD.foreground:	LightSeaGreen
+xcalc.ti.bevel.screen.LCD.shadowWidth:	0
+xcalc.ti.bevel.screen.M.background:		#000000
+xcalc.ti.bevel.screen.M.foreground:		LightSeaGreen
+xcalc.ti.bevel.screen.P.background:		#000000
+xcalc.ti.bevel.screen.P.foreground:		Yellow
+xcalc.ti.Command.foreground:			White
+xcalc.ti.Command.background:			#777777
+xcalc.ti.button5.background:			Orange3
+xcalc.ti.button19.background:			#611161
+xcalc.ti.button18.background:			#611161
+xcalc.ti.button20.background:			#611111
+xcalc.ti.button25.background:			#722222
+xcalc.ti.button30.background:			#833333
+xcalc.ti.button35.background:			#944444
+xcalc.ti.button40.background:			#a55555
+xcalc.ti.button22.background:			#222262
+xcalc.ti.button23.background:			#222262
+xcalc.ti.button24.background:			#222272
+xcalc.ti.button27.background:			#333373
+xcalc.ti.button28.background:			#333373
+xcalc.ti.button29.background:			#333373
+xcalc.ti.button32.background:			#444484
+xcalc.ti.button33.background:			#444484
+xcalc.ti.button34.background:			#444484
+xcalc.ti.button37.background:			#555595
+xcalc.ti.button38.background:			#555595
+xcalc.ti.button39.background:			#555595
+XCalc*Cursor:							hand2
+XCalc*ShapeStyle:						rectangle
+!
+!	x c l o c k
+!
+xclock*update:							1
+xclock*analog:							true
+xclock*Foreground:						white
+xclock*background:						black
+xclock*Border:							navy blue
+xclock*Highlight:						cornflower blue
+xclock*Hands:							slate blue
+xclock*Mode:							digital
+
