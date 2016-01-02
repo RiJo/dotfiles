@@ -45,14 +45,13 @@ end
 
 -- Environment variables (in lua)
 home_dir="/home/rijo/"
-std_gtk_theme = home_dir .. ".std_gtk_theme "
 terminal = os.getenv("TERMINAL") or "xterm"
 editor = os.getenv("EDITOR") or "vim"
 geditor = os.getenv("GEDITOR") or "scite"
-webbrowser = std_gtk_theme .. (os.getenv("WEBBROWSER") or "firefox")
+webbrowser = os.getenv("WEBBROWSER") or "firefox"
 --~ webbrowser = "firefox-bin"
---~ filebrowser = std_gtk_theme .. "rox"
---~ office = std_gtk_theme .. "libreoffice"
+--~ filebrowser = "rox"
+--~ office = "libreoffice"
 editor_cmd = terminal .. " -e " .. editor
 
 -- {{{ Variable definitions
