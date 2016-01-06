@@ -194,12 +194,7 @@ separator:set_text(separator_text)
 cpuwidget = awful.widget.graph()
 cpuwidget:set_width(50)
 cpuwidget:set_background_color(theme.color_label_background)
---cpuwidget:set_color("#FF5656")
 cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 }, stops = { { 0, theme.color_bar_red }, { 0.5, theme.color_bar_yellow }, { 1, theme.color_bar_green } }})
---~ cpuwidget:set_stack(true)
---~ cpuwidget:set_stack_colors({ "#FF5656", "#88A175", "#AECF96" })
---~ cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
---~ cpuwidget:set_gradient_angle(0)
 vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
 
 -- Memory widget
@@ -216,26 +211,32 @@ function nic_status()
     spacer = " "
     --local nics_info = "n/a"
     local nics_info = execute_command("ip link show | grep '^[0-9]:' | grep -v '^[0-9]: lo:' | awk '{ print $2 $9 }' | tr ':' ' ' | tr '\n' '|'")
-    local foo = ""
+    local output = ""
     for nic_info in (nics_info):gmatch"(.-)|" do
         local interface_info = split(nic_info, " ")
         local interface_name = interface_info[1]
         local interface_state = interface_info[2]
+
+        local color = ""
         if interface_state == "UP" then
-            nic_info = '<span foreground="'..theme.color_label_green..'">'..interface_name..'</span>'
+            color = theme.color_label_green
         else
-            nic_info = '<span foreground="'..theme.color_label_red..'">'..interface_name..'</span>'
+            color = theme.color_label_red
         end
 
-        foo = foo..nic_info..separator_text
+        local text = interface_name
+        if color == "" then
+            output = output..text..separator_text
+        else
+            output = output..'<span foreground="'..color..'">'..text..'</span>'..separator_text
+        end
     end
-    nicwidget:set_markup(foo)
-    --nicwidget:set_text(foo)
+    nicwidget:set_markup(output)
 end
 nic_status()
-wifi_timer = timer({timeout=13})
-wifi_timer:connect_signal("timeout", nic_status)
-wifi_timer:start()
+nic_timer = timer({timeout=13})
+nic_timer:connect_signal("timeout", nic_status)
+nic_timer:start()
 
 -- Thermal widget
 thermalwidget = wibox.widget.textbox()
@@ -261,13 +262,22 @@ batterywidget = wibox.widget.textbox()
 --vicious.register(batterywidget, vicious.widgets.bat, 'bat: $1$2', 10, 'BAT0')
 vicious.register(batterywidget, vicious.widgets.bat, function (widget, args)
     local color = ""
-    --if string.byte(args[1]) == 55 or string.byte(args[1]) == 226 then
     if utf8.codepoint(args[1]) == 8722 then
-        color = theme.color_label_red -- Uncharging
-    elseif args[2] >= 75 then
-        color = theme.color_label_green -- Charged/charging and level >=75%
+        -- Discharging
+        if args[2] >= 50 then
+            color = theme.color_label_yellow
+        else
+            color = theme.color_label_red
+        end
     else
-        color = theme.color_label_default -- Charged/charging and level <75%
+        -- Charged/charging
+        if args[2] >= 75 then
+            color = theme.color_label_green
+        elseif args[2] <= 10 then
+            color = theme.color_label_yellow
+        else
+            color = theme.color_label_default
+        end
     end
     local text = args[1]..args[2]..'%'
     --local text = args[1]..args[2]..'</span>'..' ('..args[3]..')'
@@ -371,7 +381,6 @@ for s = 1, screen.count() do
 --~     right_layout:add(memwidget)
 --    right_layout:add(volumewidget)
     right_layout:add(nicwidget)
-    --right_layout:add(wifi_signal_widget)
     --right_layout:add(separator)
     right_layout:add(batterywidget)
     right_layout:add(separator)
@@ -502,12 +511,6 @@ clientkeys = awful.util.table.join(
             c.maximized_vertical   = not c.maximized_vertical
         end)
 )
-
--- Compute the maximum number of digit we need, limited to 9
---keynumber = 0
---for s = 1, screen.count() do
---   keynumber = math.min(9, math.max(#tags[s], keynumber))
---end
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
