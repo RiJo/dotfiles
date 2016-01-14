@@ -5,6 +5,7 @@ alias ll="ls --color -lah"
 alias lt="tree -L 2"
 alias mkdir="mkdir -p"
 alias grep="grep --color -n"
+alias dus="dus --color -h -n"
 
 # This is GOLD for finding out what is taking so much space on your drives!
 alias diskspace="du -S | sort -n -r | more"
