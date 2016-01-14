@@ -1,7 +1,17 @@
 [alias]
-	lol = log --oneline --graph --decorate
+	st = status -s
+	cl = clone
+	ci = commit
+	co = checkout
+	br = branch 
+	lol = log --pretty='format:%C(auto)%h%d [%cn] %C(white)%s%C(reset)' --graph --decorate
+	prev = log --numstat -1
+	alias = "!git config -l | grep alias | cut -c 7-"
+	tags = !sh -c 'git tag | sort -V'
 [user]
 	email = rajoo@mail.com
 	name = RiJo
 [push]
 	default = simple
+[color]
+	ui = true
