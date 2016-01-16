@@ -1,3 +1,8 @@
+# Source file specific per computer
+if [ -s ~/.bash_aliases.local ]; then
+    source ~/.bash_aliases.local
+fi
+
 alias cp="cp -vi"
 alias rm="rm -vi"
 alias ls="ls --color"

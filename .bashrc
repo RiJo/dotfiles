@@ -1,3 +1,8 @@
+# Source file specific per computer
+if [ -s ~/.bashrc.local ]; then
+    source ~/.bashrc.local
+fi
+
 #
 # Environment
 #
