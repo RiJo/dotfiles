@@ -5,8 +5,7 @@
 # TODO:
 #   - pass '-l' to pipe to less
 #   - parse italics, bold, etc
-#   - parse links: "[link](http://example.com)"
-#   - Add numbering to headers
+#   - Add numbering to headers + indent
 #   - Add numbering to bullet lists
 #
 
@@ -32,30 +31,36 @@ md_format() {
     local COLOR_WHITE="\033[1;37m"
     local COLOR_RESET="\033[0m"
 
+    local COLOR_DEFAULT="${COLOR_WHITE}"
+
     # Regular expressions
-    local REGEX_HEADER='^#{1,6} .*$'
+    local REGEX_HEADER='^#{1,6} (.*)$'
     local REGEX_H1_ALT="^={${#TARGET_LINE}}\$"
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
-    local REGEX_LIST_UNORDERED='^(  )?[*+-] .*$'
-    local REGEX_LIST_ORDERED='^(  )?[0-9]+ .*$'
+    local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
+    local REGEX_LIST_ORDERED='^(  )?[0-9]+ (.*)$'
+    local REGEX_LINK='^(.*)\[(.*)\]\(([^\)]*)\)(.*)$'
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
-        printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_YELLOW}${BASH_REMATCH[1]}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H1_ALT ]]; then
         printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H2_ALT ]]; then
         printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
     # Lists
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_UNORDERED ]]; then
-        printf "${COLOR_GREEN}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]} * ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_ORDERED ]]; then
-        printf "${COLOR_BLUE}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_LIGHTPURPLE}${BASH_REMATCH[1]} # ${BASH_REMATCH[2]}${COLOR_RESET}"
+    # Links
+    elif [[ "$TARGET_LINE" =~ $REGEX_LINK ]]; then
+        printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[3]}${COLOR_DEFAULT}${BASH_REMATCH[4]}${COLOR_RESET}"
     # Default text
     elif [ -z "$TARGET_LINE" ]; then
         printf "${TARGET_LINE}"
     else
-        printf "${COLOR_WHITE}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
     fi
     printf "\n"
 }
