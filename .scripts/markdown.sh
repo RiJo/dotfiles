@@ -5,6 +5,7 @@
 # TODO:
 #   - pass '-l' to pipe to less
 #   - parse italics, bold, etc
+#   - parse monospace/code (indented 4 spaces?)
 #   - Add numbering to headers + indent
 #   - Add numbering to bullet lists
 #
@@ -50,9 +51,9 @@ md_format() {
         printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
     # Lists
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_UNORDERED ]]; then
-        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]} * ${BASH_REMATCH[2]}${COLOR_RESET}"
+        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]}*${COLOR_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_ORDERED ]]; then
-        printf "${COLOR_LIGHTPURPLE}${BASH_REMATCH[1]} # ${BASH_REMATCH[2]}${COLOR_RESET}"
+        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]}#${COLOR_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     # Links
     elif [[ "$TARGET_LINE" =~ $REGEX_LINK ]]; then
         printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[3]}${COLOR_DEFAULT}${BASH_REMATCH[4]}${COLOR_RESET}"
