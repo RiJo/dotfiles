@@ -11,6 +11,8 @@
 #   - Match multiple links on same line
 #
 
+MD_CODE_IN_BLOCK=0
+
 md_format() {
     local TARGET_LINE="$1"
     local NEXT_LINE="$2"
@@ -33,7 +35,12 @@ md_format() {
     local COLOR_WHITE="\033[1;37m"
     local COLOR_RESET="\033[0m"
 
-    local COLOR_DEFAULT="${COLOR_WHITE}"
+    # Colors in use
+    local COLOR_MD_DEFAULT="${COLOR_WHITE}"
+    local COLOR_MD_HEADER="${COLOR_YELLOW}"
+    local COLOR_MD_LIST="${COLOR_LIGHTGREEN}"
+    local COLOR_MD_LINK="${COLOR_LIGHTBLUE}"
+    local COLOR_MD_CODE="${COLOR_PURPLE}"
 
     # Regular expressions
     local REGEX_HEADER='^#{1,6} (.*)$'
@@ -42,32 +49,44 @@ md_format() {
     local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
     local REGEX_LIST_ORDERED='^(  )?[0-9]+ (.*)$'
     local REGEX_LINK='^(.*)\[(.*)\](\(([^)]*)\))?(.*)$'
+    local REGEX_CODE_BLOCK='^(.*)?`{3}(.*)?$'
+    local REGEX_CODE_INLINE='^(.*)`(.*)`(.*)$'
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
-        printf "${COLOR_YELLOW}${BASH_REMATCH[1]}${COLOR_RESET}"
+        printf "${COLOR_MD_HEADER}${BASH_REMATCH[1]}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H1_ALT ]]; then
-        printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_MD_HEADER}${TARGET_LINE}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H2_ALT ]]; then
-        printf "${COLOR_YELLOW}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_MD_HEADER}${TARGET_LINE}${COLOR_RESET}"
     # Lists
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_UNORDERED ]]; then
-        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]}*${COLOR_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
+        printf "${COLOR_MD_LIST}${BASH_REMATCH[1]}*${COLOR_MD_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_ORDERED ]]; then
-        printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]}#${COLOR_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
+        printf "${COLOR_MD_LIST}${BASH_REMATCH[1]}#${COLOR_MD_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     # Links
     elif [[ "$TARGET_LINE" =~ $REGEX_LINK ]]; then
-        #echo "'${BASH_REMATCH[1]}' | '${BASH_REMATCH[2]}' | '${BASH_REMATCH[3]}' | '${BASH_REMATCH[4]}' | '${BASH_REMATCH[5]}' | '${BASH_REMATCH[6]}'"
         if [ -z "${BASH_REMATCH[3]}" ]; then
-            printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[2]}${COLOR_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
+            printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_LINK}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
         else
-            printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[2]} (${BASH_REMATCH[4]})${COLOR_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
+            printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_LINK}${BASH_REMATCH[2]} (${BASH_REMATCH[4]})${COLOR_MD_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
         fi
+    # Code
+    elif [[ "$TARGET_LINE" =~ $REGEX_CODE_BLOCK ]]; then
+        [[ MD_CODE_IN_BLOCK -eq 0 ]] && MD_CODE_IN_BLOCK=1 || MD_CODE_IN_BLOCK=0
+        if [ -z "${BASH_REMATCH[1]}${BASH_REMATCH[2]}" ]; then
+            return 0
+        fi
+        printf "${COLOR_MD_CODE}${BASH_REMATCH[1]}${BASH_REMATCH[2]}${COLOR_RESET}"
+    elif [ $MD_CODE_IN_BLOCK -ne 0 ]; then
+        printf "${COLOR_MD_CODE}${TARGET_LINE}${COLOR_RESET}"
+    elif [[ "$TARGET_LINE" =~ $REGEX_CODE_INLINE ]]; then
+        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
     # Default text
     elif [ -z "$TARGET_LINE" ]; then
         printf "${TARGET_LINE}"
     else
-        printf "${COLOR_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
+        printf "${COLOR_MD_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
     fi
     printf "\n"
 }
