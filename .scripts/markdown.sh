@@ -8,6 +8,7 @@
 #   - parse monospace/code (indented 4 spaces?)
 #   - Add numbering to headers + indent
 #   - Add numbering to bullet lists
+#   - Match multiple links on same line
 #
 
 md_format() {
@@ -40,7 +41,7 @@ md_format() {
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
     local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
     local REGEX_LIST_ORDERED='^(  )?[0-9]+ (.*)$'
-    local REGEX_LINK='^(.*)\[(.*)\]\(([^\)]*)\)(.*)$'
+    local REGEX_LINK='^(.*)\[(.*)\](\(([^)]*)\))?(.*)$'
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
@@ -56,7 +57,12 @@ md_format() {
         printf "${COLOR_LIGHTGREEN}${BASH_REMATCH[1]}#${COLOR_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     # Links
     elif [[ "$TARGET_LINE" =~ $REGEX_LINK ]]; then
-        printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[3]}${COLOR_DEFAULT}${BASH_REMATCH[4]}${COLOR_RESET}"
+        #echo "'${BASH_REMATCH[1]}' | '${BASH_REMATCH[2]}' | '${BASH_REMATCH[3]}' | '${BASH_REMATCH[4]}' | '${BASH_REMATCH[5]}' | '${BASH_REMATCH[6]}'"
+        if [ -z "${BASH_REMATCH[3]}" ]; then
+            printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[2]}${COLOR_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
+        else
+            printf "${COLOR_DEFAULT}${BASH_REMATCH[1]}${COLOR_LIGHTBLUE}${BASH_REMATCH[2]} (${BASH_REMATCH[4]})${COLOR_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
+        fi
     # Default text
     elif [ -z "$TARGET_LINE" ]; then
         printf "${TARGET_LINE}"
