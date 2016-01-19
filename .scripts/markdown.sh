@@ -41,6 +41,8 @@ md_get_header_index() {
     fi
     RESULT="${RESULT}${NEW_LEVEL}"
     echo "${RESULT// /.}"
+
+    return 0
 }
 
 md_format() {
@@ -119,9 +121,7 @@ md_format() {
     elif [[ "$TARGET_LINE" =~ $REGEX_CODE_INLINE ]]; then
         printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
     # Default text
-    elif [ -z "$TARGET_LINE" ]; then
-        printf "${TARGET_LINE}"
-    else
+    elif [ "$TARGET_LINE" ]; then
         printf "${COLOR_MD_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
     fi
     printf "\n"
@@ -147,6 +147,8 @@ main() {
         PREVIOUS_LINE="$LINE"
     done < "$MD_FILE"
     md_format "$PREVIOUS_LINE" ""
+
+    return 0
 }
 
 main "$@"
