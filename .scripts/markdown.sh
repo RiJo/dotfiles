@@ -73,7 +73,7 @@ md_format() {
     local COLOR_MD_CODE="${COLOR_PURPLE}"
 
     # Regular expressions
-    local REGEX_HEADER='^(#{1,6}) (.*)$'
+    local REGEX_HEADER='^(#{1,6}) ([^#]*).*$'
     local REGEX_H1_ALT="^={${#TARGET_LINE}}\$"
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
     local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
