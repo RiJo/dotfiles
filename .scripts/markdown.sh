@@ -76,8 +76,8 @@ md_format() {
     local REGEX_HEADER='^(#{1,6}) ([^#]*).*$'
     local REGEX_H1_ALT="^={${#TARGET_LINE}}\$"
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
-    local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
-    local REGEX_LIST_ORDERED='^(  )?[0-9]+ (.*)$'
+    local REGEX_LIST_UNORDERED='^([ ]{2}*)[*+-] (.*)$'
+    local REGEX_LIST_ORDERED='^([ ]{2}*)[0-9]+ (.*)$'
     local REGEX_LINK='^(.*)\[(.*)\](\(([^)]*)\))?(.*)$'
     local REGEX_CODE_BLOCK1='^(.*)?`{3}(.*)?$'
     local REGEX_CODE_BLOCK2='^ {4}(.*)?$'
