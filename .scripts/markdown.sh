@@ -49,7 +49,8 @@ md_format() {
     local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
     local REGEX_LIST_ORDERED='^(  )?[0-9]+ (.*)$'
     local REGEX_LINK='^(.*)\[(.*)\](\(([^)]*)\))?(.*)$'
-    local REGEX_CODE_BLOCK='^(.*)?`{3}(.*)?$'
+    local REGEX_CODE_BLOCK1='^(.*)?`{3}(.*)?$'
+    local REGEX_CODE_BLOCK2='^ {4}(.*)?$'
     local REGEX_CODE_INLINE='^(.*)`(.*)`(.*)$'
 
     # Headers
@@ -72,12 +73,15 @@ md_format() {
             printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_LINK}${BASH_REMATCH[2]} (${BASH_REMATCH[4]})${COLOR_MD_DEFAULT}${BASH_REMATCH[5]}${COLOR_RESET}"
         fi
     # Code
-    elif [[ "$TARGET_LINE" =~ $REGEX_CODE_BLOCK ]]; then
+    elif [[ "$TARGET_LINE" =~ $REGEX_CODE_BLOCK1 ]]; then
         [[ MD_CODE_IN_BLOCK -eq 0 ]] && MD_CODE_IN_BLOCK=1 || MD_CODE_IN_BLOCK=0
         if [ -z "${BASH_REMATCH[1]}${BASH_REMATCH[2]}" ]; then
             return 0
         fi
         printf "${COLOR_MD_CODE}${BASH_REMATCH[1]}${BASH_REMATCH[2]}${COLOR_RESET}"
+    elif [[ "$TARGET_LINE" =~ $REGEX_CODE_BLOCK2 ]]; then
+        printf "${COLOR_MD_CODE}${BASH_REMATCH[1]}${COLOR_RESET}"
+        [[ "$NEXT_LINE" =~ $REGEX_CODE_BLOCK2 ]] && MD_CODE_IN_BLOCK=1 || MD_CODE_IN_BLOCK=0
     elif [ $MD_CODE_IN_BLOCK -ne 0 ]; then
         printf "${COLOR_MD_CODE}${TARGET_LINE}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_CODE_INLINE ]]; then
