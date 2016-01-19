@@ -6,12 +6,42 @@
 #   - pass '-l' to pipe to less
 #   - parse italics, bold, etc
 #   - parse monospace/code (indented 4 spaces?)
-#   - Add numbering to headers + indent
 #   - Add numbering to bullet lists
 #   - Match multiple links on same line
 #
 
+# TODO: move into main()?
+# Global scope
+MD_HEADER_LEVEL= # TODO: store array?
 MD_CODE_IN_BLOCK=0
+
+md_get_header_index() {
+    local TARGET_LEVEL="$1"
+    local SUBLEVELS=(${MD_HEADER_LEVEL//./ })
+
+    # Add missing sublevels (if long jump)
+    local TARGET_SUBLEVELS=$((TARGET_LEVEL-1))
+    if [ ${#SUBLEVELS[@]} -lt $TARGET_SUBLEVELS ]; then
+        local MISSING_SUBLEVELS=$(($TARGET_SUBLEVELS-${#SUBLEVELS[@]}))
+        for (( c=0; c<$MISSING_SUBLEVELS; c++ )); do
+            SUBLEVELS+=('1')
+        done
+    fi
+
+    # Strip exceeding sublevels
+    local ROOT_LEVELS=("${SUBLEVELS[@]::((${TARGET_LEVEL}-1))}")
+
+    # Calculate new level index
+    local NEW_LEVEL=$((${SUBLEVELS[((${TARGET_LEVEL}-1))]}+1))
+
+    # Generate result
+    local RESULT="${ROOT_LEVELS[@]}"
+    if [ "$RESULT" ]; then
+        RESULT="${RESULT}."
+    fi
+    RESULT="${RESULT}${NEW_LEVEL}"
+    echo "${RESULT// /.}"
+}
 
 md_format() {
     local TARGET_LINE="$1"
@@ -43,7 +73,7 @@ md_format() {
     local COLOR_MD_CODE="${COLOR_PURPLE}"
 
     # Regular expressions
-    local REGEX_HEADER='^#{1,6} (.*)$'
+    local REGEX_HEADER='^(#{1,6}) (.*)$'
     local REGEX_H1_ALT="^={${#TARGET_LINE}}\$"
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
     local REGEX_LIST_UNORDERED='^(  )?[*+-] (.*)$'
@@ -55,7 +85,9 @@ md_format() {
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
-        printf "${COLOR_MD_HEADER}${BASH_REMATCH[1]}${COLOR_RESET}"
+        local HEADER_INDEX="$(md_get_header_index "${#BASH_REMATCH[1]}")"
+        export MD_HEADER_LEVEL="$HEADER_INDEX" # TODO: move into md_get_header_index()
+        printf "${COLOR_MD_HEADER}${HEADER_INDEX} ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H1_ALT ]]; then
         printf "${COLOR_MD_HEADER}${TARGET_LINE}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H2_ALT ]]; then
@@ -93,6 +125,8 @@ md_format() {
         printf "${COLOR_MD_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
     fi
     printf "\n"
+
+    return 0
 }
 
 main() {
