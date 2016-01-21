@@ -6,18 +6,13 @@
 #   - pass '-l' to pipe to less
 #   - parse italics, bold, etc
 #   - parse monospace/code (indented 4 spaces?)
-#   - Add numbering to bullet lists
 #   - Match multiple links on same line
+#   - Bugfix: numbering of ordered list is reset if item has unordered sublist
 #
 
-# TODO: move into main()?
-# Global scope
-MD_HEADER_LEVEL= # TODO: store array?
-MD_CODE_IN_BLOCK=0
-
-md_get_header_index() {
+md_get_item_index() {
     local TARGET_LEVEL="$1"
-    local SUBLEVELS=(${MD_HEADER_LEVEL//./ })
+    local SUBLEVELS=($2)
 
     # Add missing sublevels (if long jump)
     local TARGET_SUBLEVELS=$((TARGET_LEVEL-1))
@@ -87,8 +82,8 @@ md_format() {
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
-        local HEADER_INDEX="$(md_get_header_index "${#BASH_REMATCH[1]}")"
-        export MD_HEADER_LEVEL="$HEADER_INDEX" # TODO: move into md_get_header_index()
+        local HEADER_INDEX="$(md_get_item_index "${#BASH_REMATCH[1]}" "${MD_HEADER_LEVEL//./ }")"
+        MD_HEADER_LEVEL="$HEADER_INDEX"
         printf "${COLOR_MD_HEADER}${HEADER_INDEX} ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$NEXT_LINE" =~ $REGEX_H1_ALT ]]; then
         printf "${COLOR_MD_HEADER}${TARGET_LINE}${COLOR_RESET}"
@@ -98,7 +93,18 @@ md_format() {
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_UNORDERED ]]; then
         printf "${COLOR_MD_LIST}${BASH_REMATCH[1]}*${COLOR_MD_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_LIST_ORDERED ]]; then
-        printf "${COLOR_MD_LIST}${BASH_REMATCH[1]}#${COLOR_MD_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
+        local LIST_INDEX="$(md_get_item_index $((${#BASH_REMATCH[1]}/2+1)) "${MD_LIST_LEVEL//./ }")"
+        printf "${COLOR_MD_LIST}${BASH_REMATCH[1]}${LIST_INDEX##*.}${COLOR_MD_DEFAULT} ${BASH_REMATCH[2]}${COLOR_RESET}"
+        if [[ ! "$NEXT_LINE" =~ $REGEX_LIST_ORDERED ]]; then
+            if [[ "$NEXT_LINE" =~ $REGEX_LIST_UNORDERED ]]; then
+                MD_LIST_LEVEL=${LIST_INDEX%.*}
+            else
+                MD_LIST_LEVEL=
+            fi
+        else
+            MD_LIST_LEVEL="$LIST_INDEX"
+        fi
+
     # Links
     elif [[ "$TARGET_LINE" =~ $REGEX_LINK ]]; then
         if [ -z "${BASH_REMATCH[3]}" ]; then
@@ -138,6 +144,11 @@ main() {
         echo "Could not find markdown file given: $MD_FILE"
         return 1
     fi
+
+    # Global scope
+    local MD_HEADER_LEVEL=
+    local MD_LIST_LEVEL=
+    local MD_CODE_IN_BLOCK=0
 
     local PREVIOUS_LINE='\0' # Null character used to ignore first line
     while IFS='\n' read LINE; do
