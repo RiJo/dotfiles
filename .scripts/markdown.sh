@@ -10,6 +10,22 @@
 #   - Bugfix: numbering of ordered list is reset if item has unordered sublist
 #
 
+readonly MD_FILE_EXTENSIONS="md markdown"
+
+md_list_files_in_directory() {
+    local TARGET_DIRECTORY="$1"
+    local NO_MD_FILE_FOUND=1
+    for FILENAME in "$TARGET_DIRECTORY/"*; do
+        local EXTENSION_REGEX="^.*\.(${MD_FILE_EXTENSIONS// /|})\$"
+        if [[ ! "$FILENAME" =~ $EXTENSION_REGEX ]]; then
+            continue;
+        fi
+        echo "${FILENAME//${TARGET_DIRECTORY}\//}"
+        NO_MD_FILE_FOUND=0
+    done
+    return $NO_MD_FILE_FOUND
+}
+
 md_get_item_index() {
     local TARGET_LEVEL="$1"
     local SUBLEVELS=($2)
@@ -138,8 +154,11 @@ md_format() {
 main() {
     local MD_FILE="$1"
     if [ -z "$MD_FILE" ]; then
-        echo "No target markdown file given"
-        return 1
+        md_list_files_in_directory .
+        return $?
+    elif [ -d "$MD_FILE" ]; then
+        md_list_files_in_directory "$MD_FILE"
+        return $?
     elif [ ! -f "$MD_FILE" ]; then
         echo "Could not find markdown file given: $MD_FILE"
         return 1
