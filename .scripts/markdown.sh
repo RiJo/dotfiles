@@ -3,7 +3,7 @@
 #   Bash markdown syntax highligter
 #
 # TODO:
-#   - pass '-l' to pipe to less
+#   - pass '-l' to pipe to $PAGER (if set)
 #   - parse italics, bold, etc
 #   - parse monospace/code (indented 4 spaces?)
 #   - Match multiple links on same line
