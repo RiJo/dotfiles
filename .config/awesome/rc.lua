@@ -52,7 +52,11 @@ webbrowser = os.getenv("WEBBROWSER") or "firefox"
 --~ webbrowser = "firefox-bin"
 --~ filebrowser = "rox"
 --~ office = "libreoffice"
-editor_cmd = terminal .. " -e " .. editor
+--editor_cmd = terminal .. " -e " .. editor
+
+-- Apply light theme (for applications not properly working with dark one)
+light_theme = "GTK_THEME=:light "
+webbrowser = light_theme .. webbrowser
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
@@ -451,7 +455,7 @@ globalkeys = awful.util.table.join(
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal, false)   end),
-    awful.key({ modkey,           }, "w",      function () awful.util.spawn(webbrowser, false) end),
+    awful.key({ modkey,           }, "w",      function () awful.util.spawn_with_shell(webbrowser, false) end),
     awful.key({ modkey,           }, "s",      function () awful.util.spawn(geditor, false)    end),
 --~     awful.key({ modkey,           }, "e",      function () awful.util.spawn(filebrowser, false)end),
 --~     awful.key({ modkey,           }, "o",      function () awful.util.spawn(office, false)     end),
