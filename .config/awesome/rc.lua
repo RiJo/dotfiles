@@ -262,34 +262,38 @@ vicious.register(thermalwidget, vicious.widgets.thermal, function (widget, args)
 end, 18, { "thermal_zone0", "sys"} )
 
 -- Battery widget
-batterywidget = wibox.widget.textbox()
---vicious.register(batterywidget, vicious.widgets.bat, 'bat: $1$2', 10, 'BAT0')
-vicious.register(batterywidget, vicious.widgets.bat, function (widget, args)
-    local color = ""
-    if utf8.codepoint(args[1]) == 8722 then
-        -- Discharging
-        if args[2] >= 50 then
-            color = theme.color_label_yellow
+batterywidget = nil
+batteryname = 'BAT0'
+if file_exists('/sys/class/power_supply/' .. batteryname) then
+    batterywidget = wibox.widget.textbox()
+    --vicious.register(batterywidget, vicious.widgets.bat, 'bat: $1$2', 10, 'BAT0')
+    vicious.register(batterywidget, vicious.widgets.bat, function (widget, args)
+        local color = ""
+        if utf8.codepoint(args[1]) == 8722 then
+            -- Discharging
+            if args[2] >= 50 then
+                color = theme.color_label_yellow
+            else
+                color = theme.color_label_red
+            end
         else
-            color = theme.color_label_red
+            -- Charged/charging
+            if args[2] >= 75 then
+                color = theme.color_label_green
+            elseif args[2] <= 10 then
+                color = theme.color_label_yellow
+            else
+                color = theme.color_label_default
+            end
         end
-    else
-        -- Charged/charging
-        if args[2] >= 75 then
-            color = theme.color_label_green
-        elseif args[2] <= 10 then
-            color = theme.color_label_yellow
-        else
-            color = theme.color_label_default
+        local text = args[1]..args[2]..'%'
+        --local text = args[1]..args[2]..'</span>'..' ('..args[3]..')'
+        if color == "" then
+            return text
         end
-    end
-    local text = args[1]..args[2]..'%'
-    --local text = args[1]..args[2]..'</span>'..' ('..args[3]..')'
-    if color == "" then
-        return text
-    end
-    return '<span color="'..color..'">'..text..'</span>'
-end, 23, 'BAT0')
+        return '<span color="'..color..'">'..text..'</span>'
+    end, 23, batteryname)
+end
 
 -- Packages widget
 pkgwidget = wibox.widget.textbox()
@@ -386,8 +390,10 @@ for s = 1, screen.count() do
 --    right_layout:add(volumewidget)
     right_layout:add(nicwidget)
     --right_layout:add(separator)
-    right_layout:add(batterywidget)
-    right_layout:add(separator)
+    if batterywidget ~= nil then
+        right_layout:add(batterywidget)
+        right_layout:add(separator)
+    end
     right_layout:add(pkgwidget)
     right_layout:add(separator)
     right_layout:add(mytextclock)
@@ -476,13 +482,13 @@ globalkeys = awful.util.table.join(
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
-    awful.key({ modkey }, "x",
-              function ()
-                  awful.prompt.run({ prompt = "Run Lua code: " },
-                  mypromptbox[mouse.screen].widget,
-                  awful.util.eval, nil,
-                  awful.util.getdir("cache") .. "/history_eval")
-              end),
+--~     awful.key({ modkey }, "x",
+--~               function ()
+--~                   awful.prompt.run({ prompt = "Run Lua code: " },
+--~                   mypromptbox[mouse.screen].widget,
+--~                   awful.util.eval, nil,
+--~                   awful.util.getdir("cache") .. "/history_eval")
+--~               end),
 
     -- Multimedia keys
     awful.key({ }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer set Master 2%+", false) end),
