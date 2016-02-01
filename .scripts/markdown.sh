@@ -170,7 +170,7 @@ main() {
     local MD_CODE_IN_BLOCK=0
 
     local PREVIOUS_LINE='\0' # Null character used to ignore first line
-    while IFS='\n' read LINE; do
+    while IFS=$'\n' read LINE; do
         if [ "$PREVIOUS_LINE" != '\0' ]; then
             md_format "$PREVIOUS_LINE" "$LINE"
         fi
