@@ -6,6 +6,7 @@
 	br = branch 
 	lol = log --pretty='format:%C(auto)%h%d [%cn] %C(white)%s%C(reset)' --graph --decorate
 	prev = log --numstat -1
+	logc = shortlog -n -s 
 	alias = "!git config -l | grep alias | cut -c 7-"
 	tags = !sh -c 'git tag | sort -V'
 [user]
