@@ -27,10 +27,15 @@ export PATH="$HOME/bin:$PATH"
 
 # Remove duplicates in bash history
 #export HISTCONTROL=ignoredups
-export HISTCONTROL=erasedups
+#export HISTCONTROL=erasedups
+export HISTCONTROL="erasedups:ignoreboth"
 export HISTSIZE=100
-#export HISTIGNORE="df*:free*"
-export HISTIGNORE="&:ls:[bf]g:exit"
+export HISTIGNORE="h:h *"
+#export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
+export HISTTIMEFORMAT='%F %T '
+
+# Automatically trim long paths in the prompt (requires Bash 4.x)
+#export PROMPT_DIRTRIM=2
 
 #so as not to be disturbed by Ctrl-S ctrl-Q in terminals:
 stty -ixon
