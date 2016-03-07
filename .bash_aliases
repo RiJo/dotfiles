@@ -32,29 +32,27 @@ h() {
     fi
 }
 
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-
-# No more cd ../../../.. but "up 4"
-up() {
-    local d=""
-    limit=$1
-    for ((i=1 ; i <= limit ; i++)); do
-        d=$d/..
-    done
-    d=$(echo $d | sed 's/^\///')
-    if [ -z "$d" ]; then
-        d=..
+# "cd ../../../.." replaced by ".. 4"
+..() {
+    if [ -z "$1" ]; then
+        cd ..
+    elif [[ "$1" =~ [0-9]+ ]]; then
+        for i in $(seq 1 $1); do cd ..; done
+    else
+        echo "NaN: $1" 1>&2
+        return 1
     fi
-    cd $d
 }
 
 # I can now run df -h|fawk 2 which saves a good bit of typing.
 function fawk {
-    first="awk '{print "
-    last="}'"
-    cmd="${first}\$${1}${last}"
-    eval $cmd
+    if [[ ! "$1" =~ [0-9]+ ]]; then
+        echo "NaN: $1" 1>&2
+        return 1
+    fi
+
+    local FIRST="awk '{print "
+    local LAST="}'"
+    local CMD="${FIRST}\$${1}${LAST}"
+    eval $CMD
 }
