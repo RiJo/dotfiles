@@ -3,7 +3,7 @@ if [ -s ~/.bash_aliases.local ]; then
     source ~/.bash_aliases.local
 fi
 
-#alias h="history"
+# Core aliases
 alias cp="cp -vi"
 alias rm="rm -vi"
 alias ls="ls --color"
@@ -14,6 +14,23 @@ alias tree="tree -C"
 alias grep="grep --color"
 alias less="less -R"
 alias dus="dus --color -h -n"
+
+# Placed after 'grep' alias to apply additional parameters
+cmd_with_grep() {
+    if [ $# -gt 1 ]; then
+        local COMMAND="${@:1:(($#-1))}"
+        local MATCH="${@:$#}"
+        echo "$COMMAND | grep \"$MATCH\""
+        $COMMAND | grep "$MATCH"
+    else
+        local COMMAND="${@}"
+        echo "$COMMAND"
+        $COMMAND
+    fi
+}
+
+# Special aliases
+alias h="cmd_with_grep history"
 alias md="~/.scripts/markdown.sh"
 
 # This is GOLD for finding out what is taking so much space on your drives!
@@ -21,16 +38,6 @@ alias diskspace="du -S | sort -n -r | more"
 
 # Show me the size (sorted) of only the folders in this directory
 alias folders="find . -maxdepth 1 -type d -print | xargs du -sk | sort -rn"
-
-# history command w/ support for eventual matching
-h() {
-    local MATCH="$@"
-    if [ "$MATCH" ]; then
-        history | grep "$MATCH"
-    else
-        history
-    fi
-}
 
 # "cd ../../../.." replaced by ".. 4"
 ..() {
