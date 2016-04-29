@@ -44,6 +44,23 @@ h() {
     fi
 }
 
+# 
+git-remote-delete() {
+    if [ -z "$1" ]; then
+        echo "No tag name given" 1>&2
+        return 1
+    fi
+    local TAG_NAME="$1"
+
+    if [ -z "$(git tag | grep "^${TAG_NAME}\$")" ]; then
+        echo "Tag not found: ${TAG_NAME}" 1>&2
+        return 2
+    fi
+
+    git tag -d "${TAG_NAME}"
+    git push origin ":refs/tags/${TAG_NAME}"
+}
+
 # I can now run df -h|fawk 2 which saves a good bit of typing.
 function fawk {
     if [[ ! "$1" =~ [0-9]+ ]]; then
