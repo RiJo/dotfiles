@@ -44,7 +44,7 @@ end
 -- }}}
 
 -- Environment variables (in lua)
-home_dir="/home/rijo/"
+--home_dir="/home/rijo/"
 terminal = os.getenv("TERMINAL") or "xterm"
 editor = os.getenv("EDITOR") or "vim"
 geditor = os.getenv("GEDITOR") or "scite"

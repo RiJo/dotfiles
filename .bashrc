@@ -30,7 +30,7 @@ export PATH="$HOME/bin:$PATH"
 #export HISTCONTROL=erasedups
 export HISTCONTROL="erasedups:ignoreboth"
 export HISTSIZE=100
-export HISTIGNORE="h:h *"
+#export HISTIGNORE="h:h *"
 #export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
 
