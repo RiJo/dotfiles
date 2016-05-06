@@ -5,6 +5,11 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
     unset f
 fi
 
+# Source file specific per computer
+if [ -s ~/.xinitrc.local ]; then
+    source ~/.xinitrc.local
+fi
+
 #feh --bg-scale /home/rijo/images/wallpapers/gentoo_black/gentoo_black.png
 
 #wicd-client --tray 1> /dev/null &
