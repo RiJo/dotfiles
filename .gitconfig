@@ -4,7 +4,7 @@
 	logc = shortlog -n -s
 	alias = "!git config -l | grep alias | cut -c 7-"
 	tags = !sh -c 'git tag | sort -V'
-	sum = "!printf '>>> Branches <<<\n'; git branch -vv; printf '\n>>> Stash <<<\n'; git stash list; printf '\n>>> Status <<<\n'; git status -s -uno; printf '\n>>> Log <<<\n'; git lol -10 HEAD @{u}"
+	sum = "!printf '>>> Branches <<<\n'; git branch -vv; printf '\n>>> Stash <<<\n'; git stash list; printf '\n>>> Status <<<\n'; git status -s -uno; printf '\n>>> Log <<<\n'; git lol -10 HEAD @{u} 2> /dev/null || git lol -10"
 	undo-commit = "reset --soft HEAD~1"
 	drop = "reset --hard HEAD"
 	tag-delete = "!f() { git tag -d "$@" && git push origin :"$@"; }; f"
