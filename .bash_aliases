@@ -33,12 +33,6 @@ cmd_with_grep() {
 alias h="cmd_with_grep history"
 alias md="~/.scripts/markdown.sh"
 
-# This is GOLD for finding out what is taking so much space on your drives!
-alias diskspace="du -S | sort -n -r | more"
-
-# Show me the size (sorted) of only the folders in this directory
-alias folders="find . -maxdepth 1 -type d -print | xargs du -sk | sort -rn"
-
 # "cd ../../../.." replaced by ".. 4"
 ..() {
     if [ -z "$1" ]; then
@@ -51,24 +45,7 @@ alias folders="find . -maxdepth 1 -type d -print | xargs du -sk | sort -rn"
     fi
 }
 
-# 
-git-remote-delete() {
-    if [ -z "$1" ]; then
-        echo "No tag name given" 1>&2
-        return 1
-    fi
-    local TAG_NAME="$1"
-
-    if [ -z "$(git tag | grep "^${TAG_NAME}\$")" ]; then
-        echo "Tag not found: ${TAG_NAME}" 1>&2
-        return 2
-    fi
-
-    git tag -d "${TAG_NAME}"
-    git push origin ":refs/tags/${TAG_NAME}"
-}
-
-# I can now run df -h|fawk 2 which saves a good bit of typing.
+# "awk '{print 2}'" replaced by "fawk 2"
 function fawk {
     if [[ ! "$1" =~ [0-9]+ ]]; then
         echo "NaN: $1" 1>&2
@@ -80,3 +57,4 @@ function fawk {
     local CMD="${FIRST}\$${1}${LAST}"
     eval $CMD
 }
+
