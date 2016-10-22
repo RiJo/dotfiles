@@ -38,26 +38,33 @@ function dir-root() {
 
 # Get root path of eventual svn repo of `pwd`
 function svn-root() {
-    dir-root "$PWD" ".svn"
+    if  [ $# == 0 ]; then
+        dir-root "$PWD" ".svn"
+    else
+        dir-root "$@" ".svn"
+    fi
 }
 
 # Get root path of eventual git repo of `pwd`
 function git-root() {
-    dir-root "$PWD" ".git"
+    if  [ $# == 0 ]; then
+        dir-root "$PWD" ".git"
+    else
+        dir-root "$@" ".git"
+    fi
 }
 
 # Override builtin cd command for git- and svn-hook triggers
 # TODO: also override pushd, popd, and c/o
 function cd() {
     local PREV_PWD="$PWD"
-    local PREV_GIT_ROOT="$(git-root "$PWD")"
-    local PREV_SVN_ROOT="$(svn-root "$PWD")"
     builtin cd "$@"
     local CUR_PWD="$PWD"
     if [ "$PREV_PWD" == "$CUR_PWD" ]; then
         return
     fi
 
+    local PREV_GIT_ROOT="$(git-root "$PREV_PWD")"
     local CUR_GIT_ROOT="$(git-root "$CUR_PWD")"
     if [ "$PREV_GIT_ROOT" != "$CUR_GIT_ROOT" ]; then
         if [ "$PREV_GIT_ROOT" ]; then
@@ -68,6 +75,7 @@ function cd() {
         fi
     fi
 
+    local PREV_SVN_ROOT="$(svn-root "$PREV_PWD")"
     local CUR_SVN_ROOT="$(svn-root "$CUR_PWD")"
     if [ "$PREV_SVN_ROOT" != "$CUR_SVN_ROOT" ]; then
         if [ "$PREV_SVN_ROOT" ]; then
