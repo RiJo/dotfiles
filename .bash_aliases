@@ -54,16 +54,12 @@ function git-root() {
     fi
 }
 
-# Override builtin cd command for git- and svn-hook triggers
-# TODO: also override pushd, popd, and c/o
-function cd() {
-    local PREV_PWD="$PWD"
-    builtin cd "$@"
-    local CUR_PWD="$PWD"
-    if [ "$PREV_PWD" == "$CUR_PWD" ]; then
-        return
-    fi
+# Called on bash spawn + after call to 'cd', 'pushd' or 'popd'
+function pwd_altered_hook() {
+    local PREV_PWD="$1"
+    local CUR_PWD="$2"
 
+    # git
     local PREV_GIT_ROOT="$(git-root "$PREV_PWD")"
     local CUR_GIT_ROOT="$(git-root "$CUR_PWD")"
     if [ "$PREV_GIT_ROOT" != "$CUR_GIT_ROOT" ]; then
@@ -75,6 +71,7 @@ function cd() {
         fi
     fi
 
+    # svn
     local PREV_SVN_ROOT="$(svn-root "$PREV_PWD")"
     local CUR_SVN_ROOT="$(svn-root "$CUR_PWD")"
     if [ "$PREV_SVN_ROOT" != "$CUR_SVN_ROOT" ]; then
@@ -84,6 +81,41 @@ function cd() {
         if [ "$CUR_SVN_ROOT" ]; then
             echo ">>> entered svn repo 'TODO' <<<"
         fi
+    fi
+}
+
+# Initial hook if bash is spawned inside repo
+pwd_altered_hook "" "$PWD"
+
+# Override builtin 'cd' command for pwd alter hook
+function cd() {
+    local PREV_PWD="$PWD"
+    builtin cd "$@"
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
+    fi
+}
+
+# Override builtin 'pushd' command for pwd alter hook
+function pushd() {
+    local PREV_PWD="$PWD"
+    # Note: default annoying stdout printout removed
+    builtin pushd "$@" 1> /dev/null
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
+    fi
+}
+
+# Override builtin 'popd' command for pwd alter hook
+function popd() {
+    local PREV_PWD="$PWD"
+    # Note: default annoying stdout printout removed
+    builtin popd "$@" 1> /dev/null
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
     fi
 }
 
