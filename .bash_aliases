@@ -136,6 +136,7 @@ function cmd_with_grep() {
 # Special aliases
 alias h="cmd_with_grep history"
 alias md="~/.scripts/markdown.sh"
+alias repos="find . -type d -name '.git' -o -name '.svn'"
 
 # "cd ../../../.." replaced by ".. 4"
 function ..() {
