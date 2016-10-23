@@ -100,7 +100,9 @@ set_bash_prompt() {
     #local SELECT="FOO=\$?;if [ \$FOO = 0 ]; then echo \"${SMILEY}\"; else echo \"(\$FOO) ${FROWNY}\"; fi"
     local PS_EXIT_CODE="PS_TEMP=\$?;if [ \$PS_TEMP -ne 0 ]; then echo \" (${RED}\$PS_TEMP${NO_COLOR})\"; fi"
 
-    export PS1="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR}\`${PS_EXIT_CODE}\` \$"
+source /usr/share/git/completion/git-prompt.sh
+
+    export PS1="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR}${BLUE}\$(__git_ps1)${NO_COLOR}\`${PS_EXIT_CODE}\` \$"
     export PS2="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR} >"
 }
 set_bash_prompt
