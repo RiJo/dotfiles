@@ -39,7 +39,7 @@ function dir-root() {
 # Get root path of eventual svn repo of `pwd`
 function svn-root() {
     if  [ $# == 0 ]; then
-        dir-root "$PWD" ".svn"
+        svn-root "$PWD"
     else
         dir-root "$@" ".svn"
     fi
@@ -48,9 +48,45 @@ function svn-root() {
 # Get root path of eventual git repo of `pwd`
 function git-root() {
     if  [ $# == 0 ]; then
-        dir-root "$PWD" ".git"
+        git-root "$PWD"
     else
         dir-root "$@" ".git"
+    fi
+}
+
+function git-name() {
+    if  [ $# == 0 ]; then
+        # Evaluate current directory
+        git-name "$(git-root)/.git"
+    else
+        if [ -d "${@}" ]; then
+            # Normal git repo
+            if [ -f "${@}/config" ]; then
+                # TODO: handle different url definitions:
+                # - remote.origin.url=https://github.com/RiJo/dotfiles.git
+                # - remote.origin.url=git@server.com:repo.git
+                local GIT_NAME="$(git config --file "${@}/config" --list | grep 'remote.origin.url' | cut -d= -f2)"
+                if [ "$GIT_NAME" ]; then
+                    echo "$GIT_NAME"
+                    return 0
+                fi
+            else
+                echo "Git config file not found: ${@}/config" 1>&2
+                return 1
+            fi
+        elif [ -f "${@}" ]; then
+            # Git submodule repo
+            local SUBMODULE_CONFIG="$(cat "${@}" | grep 'gitdir:' | sed 's/: /:/g' | cut -d: -f2)"
+            if [ "$SUBMODULE_CONFIG" ]; then
+                git-name "$(readlink -f "$(dirname "${@}")/$SUBMODULE_CONFIG")"
+            else
+                echo "Git submodule config file invalid: ${@}" 1>&2
+                return 1
+            fi
+        else
+            echo "Not a git config directory: ${@}" 1>&2
+            return 1
+        fi
     fi
 }
 
@@ -64,10 +100,10 @@ function pwd_altered_hook() {
     local CUR_GIT_ROOT="$(git-root "$CUR_PWD")"
     if [ "$PREV_GIT_ROOT" != "$CUR_GIT_ROOT" ]; then
         if [ "$PREV_GIT_ROOT" ]; then
-            echo ">>> left git repo '$(basename "$(grep '.git' "$PREV_GIT_ROOT/.git/config")")' <<<"
+            echo ">>> left git repo '$(git-name "$PREV_GIT_ROOT/.git")' <<<"
         fi
         if [ "$CUR_GIT_ROOT" ]; then
-            echo ">>> entered git repo '$(basename "$(grep '.git' "$CUR_GIT_ROOT/.git/config")")' <<<"
+            echo ">>> entered git repo '$(git-name "$CUR_GIT_ROOT/.git")' <<<"
         fi
     fi
 
