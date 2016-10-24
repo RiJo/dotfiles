@@ -54,6 +54,23 @@ function git-root() {
     fi
 }
 
+function svn-name() {
+    if  [ $# == 0 ]; then
+        # Evaluate current directory
+        svn-name "$(svn-root)"
+    elif [ -d "${@}" ]; then
+        local SVN_NAME="$(svn info "${@}" | grep '^URL:' | sed 's/: /:/g' | cut -d: -f2-)"
+        if [ "$SVN_NAME" ]; then
+            echo "$SVN_NAME"
+        else
+            echo "$(dirname "${@}")"
+        fi
+    else
+        echo "Not a directory: ${@}" 1>&2
+        return 1
+    fi
+}
+
 function git-name() {
     if  [ $# == 0 ]; then
         # Evaluate current directory
@@ -65,10 +82,11 @@ function git-name() {
                 # TODO: handle different url definitions:
                 # - remote.origin.url=https://github.com/RiJo/dotfiles.git
                 # - remote.origin.url=git@server.com:repo.git
-                local GIT_NAME="$(git config --file "${@}/config" --list | grep 'remote.origin.url' | cut -d= -f2)"
+                local GIT_NAME="$(git config --file "${@}/config" --list | grep '^remote.origin.url' | cut -d= -f2-)"
                 if [ "$GIT_NAME" ]; then
                     echo "$GIT_NAME"
-                    return 0
+                else
+                    echo "$(dirname "${@}")"
                 fi
             else
                 echo "Git config file not found: ${@}/config" 1>&2
@@ -76,7 +94,7 @@ function git-name() {
             fi
         elif [ -f "${@}" ]; then
             # Git submodule repo
-            local SUBMODULE_CONFIG="$(cat "${@}" | grep 'gitdir:' | sed 's/: /:/g' | cut -d: -f2)"
+            local SUBMODULE_CONFIG="$(cat "${@}" | grep '^gitdir:' | sed 's/: /:/g' | cut -d: -f2-)"
             if [ "$SUBMODULE_CONFIG" ]; then
                 git-name "$(readlink -f "$(dirname "${@}")/$SUBMODULE_CONFIG")"
             else
@@ -112,10 +130,10 @@ function pwd_altered_hook() {
     local CUR_SVN_ROOT="$(svn-root "$CUR_PWD")"
     if [ "$PREV_SVN_ROOT" != "$CUR_SVN_ROOT" ]; then
         if [ "$PREV_SVN_ROOT" ]; then
-            echo ">>> left svn repo 'TODO' <<<"
+            echo ">>> left svn repo '$(svn-name "$PREV_SVN_ROOT")' <<<"
         fi
         if [ "$CUR_SVN_ROOT" ]; then
-            echo ">>> entered svn repo 'TODO' <<<"
+            echo ">>> entered svn repo '$(svn-name "$CUR_SVN_ROOT")' <<<"
         fi
     fi
 }
