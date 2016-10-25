@@ -54,7 +54,7 @@ function svn-name() {
     if  [ $# == 0 ]; then
         svn-name "$(svn-root)" # Evaluate current directory
     elif [ -d "${@}" ]; then
-        local SVN_NAME="$(svn info "${@}" | grep '^URL:' | sed 's/: /:/g' | cut -d: -f2-)"
+        local SVN_NAME="$(svn info "${@}" | grep '^URL:' | sed 's/: /:/g' | cut -d: -f2- | rev | cut -d'/' -f1 | cut -d':' -f1 | rev)"
         if [ "$SVN_NAME" ]; then
             echo "$SVN_NAME"
         else
@@ -76,11 +76,11 @@ function git-name() {
                 # TODO: handle different url definitions:
                 # - remote.origin.url=https://github.com/RiJo/dotfiles.git
                 # - remote.origin.url=git@server.com:repo.git
-                local GIT_NAME="$(git config --file "${@}/config" --list | grep '^remote.origin.url' | cut -d= -f2-)"
+                local GIT_NAME="$(git config --file "${@}/config" --list | grep '^remote.origin.url' | cut -d= -f2- | rev | cut -d'/' -f1 | cut -d':' -f1 | rev)"
                 if [ "$GIT_NAME" ]; then
-                    echo "$GIT_NAME"
+                    echo "$GIT_NAME" # Remote repo name
                 else
-                    echo "$(dirname "${@}")"
+                    echo "$(dirname "${@}")" # No remote: pick directory name
                 fi
             elif [ -e "${@}/.git" ]; then
                 git-name "${@}/.git"
