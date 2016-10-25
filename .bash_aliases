@@ -88,6 +88,8 @@ function git-name() {
                 else
                     echo "$(dirname "${@}")"
                 fi
+            elif [ -e "${@}/.git" ]; then
+                git-name "${@}/.git"
             else
                 echo "Git config file not found: ${@}/config" 1>&2
                 return 1
