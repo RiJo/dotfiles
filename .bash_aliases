@@ -20,8 +20,8 @@ function dir-root() {
     local SOURCE_DIR="$1"
     local TARGET="$2"
 
-    if [ -z "$SOURCE_DIR" ]; then
-        return 1
+    if [ -z "$SOURCE_DIR" ] || [ "$SOURCE_DIR" == "/" ]; then
+        return 1 # base case
     fi
 
     if [ -e "$SOURCE_DIR/$TARGET" ]; then
@@ -29,16 +29,12 @@ function dir-root() {
         return 0
     fi
 
-    if [ "$SOURCE_DIR" == "/" ]; then
-        return 1
-    fi
-
     dir-root "$(dirname "$SOURCE_DIR")" "$TARGET"
 }
 
 # Get root path of eventual svn repo of `pwd`
 function svn-root() {
-    if  [ $# == 0 ]; then
+    if  [ $# == 0 ] && [ "$PWD" ]; then
         svn-root "$PWD"
     else
         dir-root "$@" ".svn"
@@ -47,7 +43,7 @@ function svn-root() {
 
 # Get root path of eventual git repo of `pwd`
 function git-root() {
-    if  [ $# == 0 ]; then
+    if  [ $# == 0 ] && [ "$PWD" ]; then
         git-root "$PWD"
     else
         dir-root "$@" ".git"
@@ -56,8 +52,7 @@ function git-root() {
 
 function svn-name() {
     if  [ $# == 0 ]; then
-        # Evaluate current directory
-        svn-name "$(svn-root)"
+        svn-name "$(svn-root)" # Evaluate current directory
     elif [ -d "${@}" ]; then
         local SVN_NAME="$(svn info "${@}" | grep '^URL:' | sed 's/: /:/g' | cut -d: -f2-)"
         if [ "$SVN_NAME" ]; then
@@ -66,15 +61,14 @@ function svn-name() {
             echo "$(dirname "${@}")"
         fi
     else
-        echo "Not a directory: ${@}" 1>&2
+        echo "Not a svn repo" 1>&2
         return 1
     fi
 }
 
 function git-name() {
     if  [ $# == 0 ]; then
-        # Evaluate current directory
-        git-name "$(git-root)/.git"
+        git-name "$(git-root)/.git" # Evaluate current directory
     else
         if [ -d "${@}" ]; then
             # Normal git repo
@@ -104,7 +98,7 @@ function git-name() {
                 return 1
             fi
         else
-            echo "Not a git config directory: ${@}" 1>&2
+            echo "Not a git repo" 1>&2
             return 1
         fi
     fi
