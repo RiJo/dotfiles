@@ -6,6 +6,10 @@ let g:solarized_termcolors=256
 set background=dark
 colorscheme solarized
 
+" Use Shift-Tab to dedent
+"set t_kB=[Z
+imap <S-Tab> <Esc><<i
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
