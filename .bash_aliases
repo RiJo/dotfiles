@@ -110,13 +110,23 @@ function git-describe() {
         return 1
     fi
 
-    local TAG_NAMES="$(git show-ref --tags | grep "$(git rev-parse --short HEAD)")"
-    if [ "$TAG_NAMES" ]; then
-        git describe --always --tag
-    else
-        local BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD)"
-        local COMMIT_HASH="$(git rev-parse --short HEAD)"
+    local TARGET_HASH="HEAD"
+    if [ "$1" ]; then
+        local TARGET_HASH="$1"
+    fi
+
+    local TAG_NAMES="$(git describe --exact-match --tags "${TARGET_HASH}" 2> /dev/null)"
+    if [ "${TAG_NAMES}" ]; then
+        echo ${TAG_NAMES}
+        return 0
+    fi
+
+    local BRANCH_NAME="$(git rev-parse --abbrev-ref "${TARGET_HASH}")"
+    local COMMIT_HASH="$(git rev-parse --short "${TARGET_HASH}")"
+    if [ "${BRANCH_NAME}" ]; then
         echo "${BRANCH_NAME}-${COMMIT_HASH}"
+    else
+        echo "${COMMIT_HASH}"
     fi
 }
 
