@@ -104,6 +104,22 @@ function git-name() {
     fi
 }
 
+function git-describe() {
+    if [ -z "$(git-root)" ]; then
+        echo "No a git repo" 1>&2
+        return 1
+    fi
+
+    local TAG_NAMES="$(git show-ref --tags | grep "$(git rev-parse --short HEAD)")"
+    if [ "$TAG_NAMES" ]; then
+        git describe --always --tag
+    else
+        local BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD)"
+        local COMMIT_HASH="$(git rev-parse --short HEAD)"
+        echo "${BRANCH_NAME}-${COMMIT_HASH}"
+    fi
+}
+
 # Called on bash spawn + after call to 'cd', 'pushd' or 'popd'
 function pwd_altered_hook() {
     local PREV_PWD="$1"
