@@ -1,4 +1,10 @@
-syntax on
+" Setup coloring and visual presentation
+set t_Co=256
+set number
+syntax enable
+let g:solarized_termcolors=256
+set background=dark
+colorscheme solarized
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
