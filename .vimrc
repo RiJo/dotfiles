@@ -8,7 +8,9 @@ colorscheme solarized
 
 " Use Shift-Tab to dedent
 "set t_kB=[Z
-imap <S-Tab> <Esc><<i
+inoremap <S-Tab> <C-D>
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
@@ -24,10 +26,10 @@ vnoremap <Left> <Nop>
 vnoremap <Right> <Nop>
 
 " Ability to move around in insert mode w/o arrow keys
-inoremap <S-j> <Down>
-inoremap <S-k> <Up>
-inoremap <S-h> <Left> " Note: map <C-h> breaks backspace
-inoremap <S-l> <Right>
+"inoremap <S-j> <Down>
+"inoremap <S-k> <Up>
+"inoremap <S-h> <Left> " Note: map <C-h> breaks backspace
+"inoremap <S-l> <Right>
 
 " Easier to move lines around
 nnoremap <Esc>j :m .+1<CR>==
