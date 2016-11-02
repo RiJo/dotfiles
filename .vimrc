@@ -13,6 +13,11 @@ inoremap <S-Tab> <C-D>
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+" Use Ctrl-D to duplicate row
+nnoremap <C-D> :y<CR>P
+inoremap <C-D> <Esc>:y<CR>Pi
+vnoremap <C-D> yP
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
