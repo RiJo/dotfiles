@@ -140,10 +140,10 @@ function pwd_altered_hook() {
     local CUR_GIT_ROOT="$(git-root "$CUR_PWD")"
     if [ "$PREV_GIT_ROOT" != "$CUR_GIT_ROOT" ]; then
         if [ "$PREV_GIT_ROOT" ]; then
-            echo ">>> left git repo '$(git-name "$PREV_GIT_ROOT/.git")' <<<"
+            echo -e ">>> left git repo '\033[0;33m$(git-name "$PREV_GIT_ROOT/.git")\033[0m' <<<"
         fi
         if [ "$CUR_GIT_ROOT" ]; then
-            echo ">>> entered git repo '$(git-name "$CUR_GIT_ROOT/.git")' <<<"
+            echo -e ">>> entered git repo '\033[0;33m$(git-name "$CUR_GIT_ROOT/.git")\033[0m' <<<"
         fi
     fi
 
@@ -152,10 +152,10 @@ function pwd_altered_hook() {
     local CUR_SVN_ROOT="$(svn-root "$CUR_PWD")"
     if [ "$PREV_SVN_ROOT" != "$CUR_SVN_ROOT" ]; then
         if [ "$PREV_SVN_ROOT" ]; then
-            echo ">>> left svn repo '$(svn-name "$PREV_SVN_ROOT")' <<<"
+            echo -e ">>> left svn repo '\033[0;33m$(svn-name "$PREV_SVN_ROOT")\033[0m' <<<"
         fi
         if [ "$CUR_SVN_ROOT" ]; then
-            echo ">>> entered svn repo '$(svn-name "$CUR_SVN_ROOT")' <<<"
+            echo -e ">>> entered svn repo '\033[0;33m$(svn-name "$CUR_SVN_ROOT")\033[0m' <<<"
         fi
     fi
 }
