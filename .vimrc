@@ -7,19 +7,18 @@ let g:solarized_termtrans=1
 set background=dark
 colorscheme solarized
 
+" Allow saving of files as sudo when forgot to start vim using sudo
+cmap w!! w !sudo tee > /dev/null %
+
 " Use Shift-Tab to dedent
-"set t_kB=[Z
 inoremap <S-Tab> <C-D>
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-" Use Ctrl-D to duplicate row
+" Use Ctrl-D to duplicate row(s)
 nnoremap <C-D> :y<CR>P
 inoremap <C-D> <Esc>:y<CR>Pi
 vnoremap <C-D> yP
-
-" Allow saving of files as sudo when forgot to start vim using sudo
-cmap w!! w !sudo tee > /dev/null %
 
 " Disable arrow keys
 nnoremap <Up> <Nop>
@@ -31,13 +30,7 @@ vnoremap <Down> <Nop>
 vnoremap <Left> <Nop>
 vnoremap <Right> <Nop>
 
-" Ability to move around in insert mode w/o arrow keys
-"inoremap <S-j> <Down>
-"inoremap <S-k> <Up>
-"inoremap <S-h> <Left> " Note: map <C-h> breaks backspace
-"inoremap <S-l> <Right>
-
-" Easier to move lines around
+" Use <Alt-Arrows> to move lines around
 nnoremap <Esc>j :m .+1<CR>==
 nnoremap <Esc>k :m .-2<CR>==
 inoremap <Esc>j <Esc>:m .+1<CR>==gi
