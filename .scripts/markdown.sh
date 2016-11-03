@@ -94,7 +94,7 @@ md_format() {
     local REGEX_LINK='^(.*)\[(.*)\](\(([^)]*)\))?(.*)$'
     local REGEX_CODE_BLOCK1='^(.*)?`{3}(.*)?$'
     local REGEX_CODE_BLOCK2='^ {4}(.*)?$'
-    local REGEX_CODE_INLINE='^(.*)`(.*)`(.*)$'
+    local REGEX_CODE_INLINE='^([^`]*)`([^`]*)`(.*)$'
 
     # Headers
     if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
@@ -141,7 +141,13 @@ md_format() {
     elif [ $MD_CODE_IN_BLOCK -ne 0 ]; then
         printf "${COLOR_MD_CODE}${TARGET_LINE}${COLOR_RESET}"
     elif [[ "$TARGET_LINE" =~ $REGEX_CODE_INLINE ]]; then
-        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
+        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}"
+        while [ "${BASH_REMATCH[3]}" ]; do
+            if [[ "${BASH_REMATCH[3]}" =~ $REGEX_CODE_INLINE ]]; then
+                printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}"
+            fi
+        done
+#        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
     # Default text
     elif [ "$TARGET_LINE" ]; then
         printf "${COLOR_MD_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
