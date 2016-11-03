@@ -3,12 +3,33 @@ Following is a collection of tips and tricks using vim.
 
 ## General
 
+### Open at specific line
+`vim <file> +42`
+
+### Goto line
+`:42`
+
+### Insert
+Current position: `i` or `I`
+Last on line: `a` or `A`
+New line: `o` or `O`
+
+### Delete character
+`x`
+
+### Skip word
+Jump to start: `w`
+Jump to end: `e`
+
 ### Replace <Esc>
 `Ctrl-C`
 
 ### Marks
 Add: `<m[a-zA-Z>`
 Goto: ``[a-zA-Z>`
+
+### Open other file
+`:e <file>`
 
 ## Custom
 
@@ -30,6 +51,9 @@ Dedent: `<Shift-Tab>`
 
 ## Write as sudo
 `:w !sudo tee %`
+
+## Execute current file
+`:ec`
 
 ## Execute external command
 `:! [command]`
