@@ -1,6 +1,7 @@
 " Setup coloring and visual presentation
 set t_Co=256
 set number
+set cursorline
 syntax enable
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
@@ -16,6 +17,8 @@ let g:gundo_return_on_revert=0
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
+
+cmap ec !./%
 
 " Use Shift-Tab to dedent
 inoremap <S-Tab> <C-D>
