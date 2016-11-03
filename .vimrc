@@ -7,6 +7,10 @@ let g:solarized_termtrans=1
 set background=dark
 colorscheme solarized
 
+" Initialize Pathogen
+execute pathogen#infect()
+filetype plugin indent on
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
