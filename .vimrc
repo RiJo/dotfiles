@@ -11,6 +11,9 @@ colorscheme solarized
 execute pathogen#infect()
 filetype plugin indent on
 
+" Initialize Gundo
+let g:gundo_return_on_revert=0
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
