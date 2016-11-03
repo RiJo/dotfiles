@@ -42,3 +42,6 @@ inoremap <Esc>k <Esc>:m .-2<CR>==gi
 vnoremap <Esc>j :m '>+1<CR>gv=gv
 vnoremap <Esc>k :m '<-2<CR>gv=gv
 
+" Use <F12> as Gundo toggle key
+nnoremap <F12> :GundoToggle<CR>
+
