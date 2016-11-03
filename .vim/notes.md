@@ -1,6 +1,30 @@
 # Notes by myself
 Following is a collection of tips and tricks using vim.
 
+## General
+
+### Replace <Esc>
+`Ctrl-C`
+
+### Marks
+Add: `<m[a-zA-Z>`
+Goto: ``[a-zA-Z>`
+
+## Custom
+
+### Indent/dedent
+Indent: `<Tab>`
+Dedent: `<Shift-Tab>`
+
+### Move line(s)
+`<Alt-hjkl>`
+
+### Duplicate line(s)
+`<Ctrl-d>`
+
+### Toggle Gundo.vim
+`<F12>`
+
 # What are the dark corners of Vim your mom never told you about?
 <http://stackoverflow.com/questions/726894/what-are-the-dark-corners-of-vim-your-mom-never-told-you-about>
 
