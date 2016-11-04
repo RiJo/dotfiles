@@ -3,9 +3,7 @@ set t_Co=256
 set number
 set cursorline
 set encoding=utf-8
-set list listchars=tab:→\ ,trail:·
-"set list listchars=tab:→\ ,trail:·,space:·
-set list
+set listchars=tab:→\ ,trail:·,space:·
 syntax enable
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
@@ -52,6 +50,10 @@ inoremap <Esc>j <Esc>:m .+1<CR>==gi
 inoremap <Esc>k <Esc>:m .-2<CR>==gi
 vnoremap <Esc>j :m '>+1<CR>gv=gv
 vnoremap <Esc>k :m '<-2<CR>gv=gv
+
+" Use <F10> to show hidden characters
+nnoremap <F10> :set list!<CR>
+inoremap <F10> <Esc>:set list!<CR>==gi
 
 " Use <F12> as Gundo toggle key
 nnoremap <F12> :GundoToggle<CR>
