@@ -2,11 +2,16 @@
 set t_Co=256
 set number
 set cursorline
+set encoding=utf-8
+set list listchars=tab:→\ ,trail:·
+"set list listchars=tab:→\ ,trail:·,space:·
+set list
 syntax enable
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 set background=dark
 colorscheme solarized
+
 
 " Initialize Pathogen
 execute pathogen#infect()
