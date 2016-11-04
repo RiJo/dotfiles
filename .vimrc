@@ -29,8 +29,8 @@ vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
 " Use Ctrl-D to duplicate row(s)
-nnoremap <C-D> :y<CR>P
-inoremap <C-D> <Esc>:y<CR>Pi
+nnoremap <C-D> :y<CR>mmp`m
+inoremap <C-D> <Esc>:y<CR>p==gi
 vnoremap <C-D> yP
 
 " Disable arrow keys
