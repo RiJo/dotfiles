@@ -10,7 +10,7 @@ fi
 export EDITOR="/usr/bin/vim"
 export GEDITOR="/usr/bin/scite"
 export VISUAL="$EDITOR"
-export PAGER="less"
+export PAGER="less -R"
 if [ -x "/usr/bin/terminology" ]; then
     export TERMINAL="/usr/bin/terminology"
 else
