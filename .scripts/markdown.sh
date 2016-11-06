@@ -3,7 +3,6 @@
 #   Bash markdown syntax highligter
 #
 # TODO:
-#   - pass '-l' to pipe to $PAGER (if set)
 #   - parse italics, bold, etc
 #   - parse monospace/code (indented 4 spaces?)
 #   - Match multiple links on same line
@@ -158,6 +157,16 @@ md_format() {
 }
 
 main() {
+    if [ "$1" == "-p" ]; then
+        if [ "$PAGER" ]; then
+            $0 ${@:2} | $PAGER
+            return $?
+        else
+            echo "No pager defined"
+            return 1
+        fi
+    fi
+
     local MD_FILE="$1"
     if [ -z "$MD_FILE" ]; then
         md_list_files_in_directory .
