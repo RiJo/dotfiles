@@ -1,6 +1,7 @@
-# /etc/skel/.bash_logout
+# Source file specific per computer
+if [ -s ~/.bash_logout.local ]; then
+    source ~/.bash_logout.local
+fi
 
-# This file is sourced when a login shell terminates.
-
-# Clear the screen for security's sake.
+# Clear the screen for security's sake
 clear
