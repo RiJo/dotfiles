@@ -3,9 +3,9 @@
 #   Bash markdown syntax highligter
 #
 # TODO:
-#   - parse italics, bold, etc
 #   - parse monospace/code (indented 4 spaces?)
 #   - Match multiple links on same line
+#   - Implement horizontal rule ('---' or '***')
 #   - Bugfix: numbering of ordered list is reset if item has unordered sublist
 #
 
@@ -77,14 +77,25 @@ md_format() {
     local COLOR_WHITE="\033[1;37m"
     local COLOR_RESET="\033[0m"
 
+    # TODO: define following
+    local COLOR_ITLICS="\033[1m"
+    local COLOR_BOLD="\033[1m"
+    local COLOR_UNDERLINE="\033[1m"
+
     # Colors in use
     local COLOR_MD_DEFAULT="${COLOR_WHITE}"
+    local COLOR_MD_ITALICS="${COLOR_ITALICS}"
+    local COLOR_MD_BOLD="${COLOR_BOLD}"
     local COLOR_MD_HEADER="${COLOR_YELLOW}"
     local COLOR_MD_LIST="${COLOR_LIGHTGREEN}"
     local COLOR_MD_LINK="${COLOR_LIGHTBLUE}"
     local COLOR_MD_CODE="${COLOR_PURPLE}"
 
     # Regular expressions
+    local REGEX_ITALICS1='^([^*]*)\*([^*]+)\*([^*]*)$'
+    local REGEX_ITALICS2='^([^_]*)_([^_]+)_([^_]*)$'
+    local REGEX_BOLD1='^([^*]*)\*\*([^*]+)\*\*([^*]*)$'
+    local REGEX_BOLD2='^([^_]*)__([^_]+)__([^_]*)$'
     local REGEX_HEADER='^(#{1,6}) ([^#]*).*$'
     local REGEX_H1_ALT="^={${#TARGET_LINE}}\$"
     local REGEX_H2_ALT="^-{${#TARGET_LINE}}\$"
@@ -95,8 +106,14 @@ md_format() {
     local REGEX_CODE_BLOCK2='^ {4}(.*)?$'
     local REGEX_CODE_INLINE='^([^`]*)`([^`]*)`(.*)$'
 
+    # Bold
+    if [[ "${TARGET_LINE}" =~ $REGEX_BOLD1 ]] || [[ "${TARGET_LINE}" =~ $REGEX_BOLD2 ]]; then
+        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_BOLD}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
+    # Italics
+    elif [[ "${TARGET_LINE}" =~ $REGEX_ITALICS1 ]] || [[ "${TARGET_LINE}" =~ $REGEX_ITALICS2 ]]; then
+        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_ITALICS}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
     # Headers
-    if [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
+    elif [[ "${TARGET_LINE}" =~ $REGEX_HEADER ]]; then
         local HEADER_INDEX="$(md_get_item_index "${#BASH_REMATCH[1]}" "${MD_HEADER_LEVEL//./ }")"
         MD_HEADER_LEVEL="$HEADER_INDEX"
         printf "${COLOR_MD_HEADER}${HEADER_INDEX} ${BASH_REMATCH[2]}${COLOR_RESET}"
