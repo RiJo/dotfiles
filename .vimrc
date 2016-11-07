@@ -10,6 +10,9 @@ let g:solarized_termtrans=1
 set background=dark
 colorscheme solarized
 
+" Setup shell (bash)
+set shell=/bin/bash
+let $BASH_ENV = "~/.bash_aliases"
 
 " Initialize Pathogen
 execute pathogen#infect()
@@ -20,8 +23,6 @@ let g:gundo_return_on_revert=0
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
-
-cmap ec !./%
 
 " Use Shift-Tab to dedent
 inoremap <S-Tab> <C-D>
@@ -50,6 +51,9 @@ inoremap <Esc>j <Esc>:m .+1<CR>==gi
 inoremap <Esc>k <Esc>:m .-2<CR>==gi
 vnoremap <Esc>j :m '>+1<CR>gv=gv
 vnoremap <Esc>k :m '<-2<CR>gv=gv
+
+" Use <F5> to execute current file
+nnoremap <F5> :!./%<CR>
 
 " Use <F10> to show hidden characters
 nnoremap <F10> :set list!<CR>
