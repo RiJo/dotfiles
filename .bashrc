@@ -63,13 +63,81 @@ fi
 # This will prevent you from accidentally destroying the content of an already existing file if you redirect output (>filename). You can always force overwriting with >|filename.
 #shopt -o noclobber
 
-
 #
 # Aliases
 #
 if [ -s ~/.bash_aliases ]; then
     source ~/.bash_aliases
 fi
+
+#
+# $PWD alter hook
+#
+
+# Called on bash spawn + after call to 'cd', 'pushd' or 'popd'
+function pwd_altered_hook() {
+    local PREV_PWD="$1"
+    local CUR_PWD="$2"
+
+    # git
+    local PREV_GIT_ROOT="$(git-root "$PREV_PWD")"
+    local CUR_GIT_ROOT="$(git-root "$CUR_PWD")"
+    if [ "$PREV_GIT_ROOT" != "$CUR_GIT_ROOT" ]; then
+        if [ "$PREV_GIT_ROOT" ]; then
+            echo -e ">>> left git repo '\033[0;33m$(git-name "$PREV_GIT_ROOT/.git")\033[0m' <<<"
+        fi
+        if [ "$CUR_GIT_ROOT" ]; then
+            echo -e ">>> entered git repo '\033[0;33m$(git-name "$CUR_GIT_ROOT/.git")\033[0m' <<<"
+        fi
+    fi
+
+    # svn
+    local PREV_SVN_ROOT="$(svn-root "$PREV_PWD")"
+    local CUR_SVN_ROOT="$(svn-root "$CUR_PWD")"
+    if [ "$PREV_SVN_ROOT" != "$CUR_SVN_ROOT" ]; then
+        if [ "$PREV_SVN_ROOT" ]; then
+            echo -e ">>> left svn repo '\033[0;33m$(svn-name "$PREV_SVN_ROOT")\033[0m' <<<"
+        fi
+        if [ "$CUR_SVN_ROOT" ]; then
+            echo -e ">>> entered svn repo '\033[0;33m$(svn-name "$CUR_SVN_ROOT")\033[0m' <<<"
+        fi
+    fi
+}
+
+# Initial hook if bash is spawned inside repo
+pwd_altered_hook "" "$PWD"
+
+# Override builtin 'cd' command for pwd alter hook
+function cd() {
+    local PREV_PWD="$PWD"
+    builtin cd "$@"
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
+    fi
+}
+
+# Override builtin 'pushd' command for pwd alter hook
+function pushd() {
+    local PREV_PWD="$PWD"
+    # Note: default annoying stdout printout removed
+    builtin pushd "$@" 1> /dev/null
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
+    fi
+}
+
+# Override builtin 'popd' command for pwd alter hook
+function popd() {
+    local PREV_PWD="$PWD"
+    # Note: default annoying stdout printout removed
+    builtin popd "$@" 1> /dev/null
+    local CUR_PWD="$PWD"
+    if [ "$PREV_PWD" != "$CUR_PWD" ]; then
+        pwd_altered_hook "$PREV_PWD" "$CUR_PWD"
+    fi
+}
 
 #
 # Console
@@ -100,7 +168,7 @@ set_bash_prompt() {
     #local SELECT="FOO=\$?;if [ \$FOO = 0 ]; then echo \"${SMILEY}\"; else echo \"(\$FOO) ${FROWNY}\"; fi"
     local PS_EXIT_CODE="PS_TEMP=\$?;if [ \$PS_TEMP -ne 0 ]; then echo \" (${RED}\$PS_TEMP${NO_COLOR})\"; fi"
 
-source /usr/share/git/completion/git-prompt.sh
+    source /usr/share/git/completion/git-prompt.sh
 
     export PS1="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR}${BLUE}\$(__git_ps1)${NO_COLOR}\`${PS_EXIT_CODE}\` \$"
     export PS2="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR} >"
