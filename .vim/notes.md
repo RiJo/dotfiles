@@ -56,10 +56,10 @@ Dedent: `<Shift-Tab>`
 `:ec`
 
 ## Execute external command
-`:! [command]`
+`:! <command>`
 
 To get output to the current window:
-`:.! [command]`
+`:.! <command>`
 
 ## To get output to the current window on a new line:
 `:r!`
@@ -79,11 +79,15 @@ Sibling commands:
 `'.`
 
 ...and position:
-``.` 
+``.`
 
 # Some Vim tips
 <http://pastebin.com/BGGkBmVw>
 
 ## Paste from clipboard
-`"*p`
-`"+p`
+To test if your version of vim is compiled with the clipboard, do `vim --version | grep clipboard` and you should have the following arguments: `+clipboard` and `+xterm_clipboard`.
+
+To resolve this on Arch Linux: install `gvim` package instead of `vim` which ships with the vim command compiled to support clipboard.
+
+Paste from PRIMARY ("middle-click"): `"*p`
+Paste from clipboard: `"+p`
