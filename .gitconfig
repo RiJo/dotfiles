@@ -1,5 +1,5 @@
 [alias]
-	lol = log --pretty='format:%C(auto)%h%d [%cn] %C(white)%s%C(reset)' --graph --decorate
+	lol = log --pretty='format:%C(auto)%h%d [%an] %C(white)%s%C(reset)' --graph --decorate
 	prev = log --numstat -1
 	logc = shortlog -n -s
 	is-repo = !"[ -z \"$(git rev-parse --is-inside-work-tree 2> /dev/null)\" ] && exit 1; echo 'aight'; exit 0"
