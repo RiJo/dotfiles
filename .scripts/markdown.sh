@@ -159,8 +159,11 @@ md_format() {
     elif [[ "$TARGET_LINE" =~ $REGEX_CODE_INLINE ]]; then
         printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}"
         while [ "${BASH_REMATCH[3]}" ]; do
-            if [[ "${BASH_REMATCH[3]}" =~ $REGEX_CODE_INLINE ]]; then
+            local MATCH_TAIL="${BASH_REMATCH[3]}"
+            if [[ "${MATCH_TAIL}" =~ $REGEX_CODE_INLINE ]]; then
                 printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}"
+            else
+                printf "${MATCH_TAIL}"
             fi
         done
 #        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
