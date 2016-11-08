@@ -21,6 +21,12 @@ filetype plugin indent on
 " Initialize Gundo
 let g:gundo_return_on_revert=0
 
+" Initialize minibufexpl
+let g:miniBufExplMapWindowNavVim=1
+let g:miniBufExplMapWindowNavArrows=1
+let g:miniBufExplMapCTabSwitchBufs=1
+let g:miniBufExplModSelTarget=1
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
