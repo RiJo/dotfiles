@@ -105,6 +105,8 @@ md_format() {
     local REGEX_CODE_BLOCK1='^(.*)?`{3}(.*)?$'
     local REGEX_CODE_BLOCK2='^ {4}(.*)?$'
     local REGEX_CODE_INLINE='^([^`]*)`([^`]*)`(.*)$'
+    local REGEX_HORIZONTAL_RULE1='^-{3}$'
+    local REGEX_HORIZONTAL_RULE2='^\*{3}$'
 
     # Bold
     if [[ "${TARGET_LINE}" =~ $REGEX_BOLD1 ]] || [[ "${TARGET_LINE}" =~ $REGEX_BOLD2 ]]; then
@@ -167,6 +169,9 @@ md_format() {
             fi
         done
 #        printf "${COLOR_MD_DEFAULT}${BASH_REMATCH[1]}${COLOR_MD_CODE}${BASH_REMATCH[2]}${COLOR_MD_DEFAULT}${BASH_REMATCH[3]}${COLOR_RESET}"
+    # Horizontal rule
+    elif [[ "$TARGET_LINE" =~ $REGEX_HORIZONTAL_RULE1 ]] || [[ "$TARGET_LINE" =~ $REGEX_HORIZONTAL_RULE2 ]]; then
+        printf '%s' '----------------------------------------------------------------'
     # Default text
     elif [ "$TARGET_LINE" ]; then
         printf "${COLOR_MD_DEFAULT}${TARGET_LINE}${COLOR_RESET}"
