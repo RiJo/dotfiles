@@ -1,5 +1,6 @@
 " Setup coloring and visual presentation
 set t_Co=256
+set confirm
 set number
 set cursorline
 set encoding=utf-8
