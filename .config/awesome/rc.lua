@@ -460,7 +460,7 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal, false)   end),
+    awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal .. ' -e tmux', false)   end),
     awful.key({ modkey,           }, "w",      function () awful.util.spawn_with_shell(webbrowser, false) end),
     awful.key({ modkey,           }, "s",      function () awful.util.spawn(geditor, false)    end),
 --~     awful.key({ modkey,           }, "e",      function () awful.util.spawn(filebrowser, false)end),
