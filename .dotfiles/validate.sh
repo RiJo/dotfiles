@@ -6,7 +6,7 @@ main () {
 		if [ "$FILE" == "." ] || [ "$FILE" == ".." ]; then
 			continue
 		fi
-		if [ "$FILE" == ".dotfiles" ]; then
+		if [ "$FILE" == ".dotfiles" ] || [ "$FILE" == ".git" ] || [ "$FILE" == ".gitignore" ] || [ "$FILE" == ".gitmodules" ]; then
 			continue
 		fi
 
@@ -18,7 +18,7 @@ main () {
 				echo "[INVALID] $FILE" 1>&2
 			fi
 		else
-			echo "[NO LINK] $FILE" 1>&2
+			echo "[MISSING] $FILE" 1>&2
 		fi
 	done
 	return 0
