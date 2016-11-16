@@ -5,6 +5,7 @@ set number
 set cursorline
 set encoding=utf-8
 set listchars=tab:→\ ,trail:·,space:·
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 syntax enable
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
