@@ -37,6 +37,9 @@ inoremap <S-Tab> <C-D>
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+" Use Ctrl-L to show/hide line numbers
+nnoremap <C-L> :set nu!<CR>
+
 " Use Ctrl-D to duplicate row(s)
 nnoremap <C-D> :y<CR>mmp`m
 inoremap <C-D> <Esc>:y<CR>p==gi
