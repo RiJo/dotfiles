@@ -37,6 +37,9 @@ export HISTTIMEFORMAT='%F %T '
 # Automatically trim long paths in the prompt (requires Bash 4.x)
 #export PROMPT_DIRTRIM=2
 
+# Development
+export BUILD_CC="/usr/bin/gcc" # Required to build GNU C library
+
 #so as not to be disturbed by Ctrl-S ctrl-Q in terminals:
 stty -ixon
 
