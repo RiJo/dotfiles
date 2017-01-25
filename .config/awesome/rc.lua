@@ -405,7 +405,7 @@ awful.screen.connect_for_each_screen(function(s)
     right_layout:add(mytextclock)
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(wibox.widget.systray())
---~     right_layout:add(s.mylayoutbox)
+    right_layout:add(s.mylayoutbox)
 
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
