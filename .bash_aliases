@@ -31,12 +31,21 @@ function mkpatch() {
         return 2
     fi
 
-    local PATCH_HEADER="${@:2}"
-    if [ "$PATCH_HEADER" ]; then
-        echo $PATCH_HEADER
+    local OUTPUT_FILE="$2"
+
+    cp -n "$FILE_TO_PATCH" "$FILE_TO_PATCH.orig" && $EDITOR "$FILE_TO_PATCH"
+    if [ $? -ne 0 ]; then
+        echo "failed to create difference file" 1>&2
+        return 3
     fi
 
-    cp -n "$FILE_TO_PATCH" "$FILE_TO_PATCH.orig" && $EDITOR "$FILE_TO_PATCH" && diff -uB "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
+    if [ -z "$OUTPUT_FILE" ]; then
+        local OUTPUT_FILE="$(mktemp)"
+    fi
+    diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g' > "$OUTPUT_FILE"
+
+    echo "written: $OUTPUT_FILE"
+
 }
 
 # Find first occurence of target in parent directories bottom-up
