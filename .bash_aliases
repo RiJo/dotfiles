@@ -19,6 +19,26 @@ alias grep="grep --color"
 alias less="less -R"
 alias dus="dus --color -h -n"
 
+# Helper function to open file in $EDITOR for editing and then dump a unified diff.
+function mkpatch() {
+    if [ -z "$1" ]; then
+        echo "no target file given" 1>&2
+        return 1
+    fi
+    local FILE_TO_PATCH="$1"
+    if [ ! -f "$FILE_TO_PATCH" ]; then
+        echo "file not found: $FILE_TO_PATCH" 1>&2
+        return 2
+    fi
+
+    local PATCH_HEADER="${@:2}"
+    if [ "$PATCH_HEADER" ]; then
+        echo $PATCH_HEADER
+    fi
+
+    cp -n "$FILE_TO_PATCH" "$FILE_TO_PATCH.orig" && $EDITOR "$FILE_TO_PATCH" && diff -uB "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
+}
+
 # Find first occurence of target in parent directories bottom-up
 function dir-root() {
     local SOURCE_DIR="$1"
