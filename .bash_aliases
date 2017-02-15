@@ -22,7 +22,7 @@ alias dus="dus --color -h -n"
 # Helper function to open file in $EDITOR for editing and then dump a unified diff.
 function mkpatch() {
     if [ -z "$1" ]; then
-        echo "no target file given" 1>&2
+        echo "usage: mkpatch <file to patch> [<optional header>]" 1>&2
         return 1
     fi
     local FILE_TO_PATCH="$1"
@@ -31,21 +31,26 @@ function mkpatch() {
         return 2
     fi
 
-    local OUTPUT_FILE="$2"
+    local OPTIONAL_HEADER="${@:2}"
 
-    cp -n "$FILE_TO_PATCH" "$FILE_TO_PATCH.orig" && $EDITOR "$FILE_TO_PATCH"
+    # Note: stdout is redirected to sterr for vim to prevent clobbering in output if mkpatch is piped into a file.
+    cp -i "$FILE_TO_PATCH" "$FILE_TO_PATCH.orig" 1>&2
     if [ $? -ne 0 ]; then
-        echo "failed to create difference file" 1>&2
+        echo "failed to copy .orig file" 1>&2
         return 3
     fi
-
-    if [ -z "$OUTPUT_FILE" ]; then
-        local OUTPUT_FILE="$(mktemp)"
+    $EDITOR "$FILE_TO_PATCH" 1>&2
+    if [ $? -ne 0 ]; then
+        echo "$EDITOR aborted" 1>&2
+        return 4
     fi
-    diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g' > "$OUTPUT_FILE"
 
-    echo "written: $OUTPUT_FILE"
+    if [ "$OPTIONAL_HEADER" ]; then
+        echo "$OPTIONAL_HEADER"
+    fi
+    diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
 
+    rm -i "$FILE_TO_PATCH.orig" 1>&2
 }
 
 # Find first occurence of target in parent directories bottom-up
