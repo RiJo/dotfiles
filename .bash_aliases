@@ -19,13 +19,20 @@ alias grep="grep --color"
 alias less="less -R"
 alias dus="dus --color -h -n"
 
-# Helper function to create a bash script and open it in $EDITOR.
-function mkbash() {
-    if [ -z "$1" ]; then
-        echo "usage: mkbash <filename>" 1>&2
+# Helper function to create a shell script and open it in $EDITOR.
+function mkscript() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "usage: mkss <shell> <filename>" 1>&2
         return 1
     fi
-    local FILE_PATH="$1"
+
+    local SCRIPT_ENV="$1"
+    if [ ! -x "$SCRIPT_ENV" ]; then
+        echo "invalid script environment: $SCRIPT_ENV" 1>&2
+        return 1
+    fi
+
+    local FILE_PATH="$2"
     if [ -e "$FILE_PATH" ]; then
         echo "file aleady exists: $FILE_PATH" 1>&2
         return 2
@@ -37,9 +44,25 @@ function mkbash() {
         return 3
     fi
 
-    echo "#!/bin/bash" >> "$FILE_PATH"
+    echo "#!$SCRIPT_ENV" >> "$FILE_PATH"
     chmod +x "$FILE_PATH"
     $EDITOR "$FILE_PATH"
+#    history -s "$EDITOR \"$FILE_PATH\""
+}
+
+# Helper function to create a bash script and open it in $EDITOR.
+function mksh() {
+    mkscript /bin/sh $@
+}
+
+# Helper function to create a bash script and open it in $EDITOR.
+function mkbash() {
+    mkscript /bin/bash $@
+}
+
+# Helper function to create a python script and open it in $EDITOR.
+function mkpython() {
+    mkscript /bin/python $@
 }
 
 # Helper function to open file in $EDITOR for editing and then dump a unified diff.
