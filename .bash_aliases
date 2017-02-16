@@ -29,22 +29,22 @@ function mkscript() {
     local SCRIPT_ENV="$1"
     if [ ! -x "$SCRIPT_ENV" ]; then
         echo "invalid script environment: $SCRIPT_ENV" 1>&2
-        return 1
+        return 2
     fi
 
     local FILE_PATH="$2"
     if [ -e "$FILE_PATH" ]; then
         echo "file aleady exists: $FILE_PATH" 1>&2
-        return 2
+        return 3
     fi
 
     touch "$FILE_PATH"
     if [ $? -ne 0 ]; then
         echo "failed to create file: $FILE_PATH" 1>&2
-        return 3
+        return 4
     fi
 
-    echo "#!$SCRIPT_ENV" >> "$FILE_PATH"
+    echo "#!$SCRIPT_ENV" > "$FILE_PATH"
     chmod +x "$FILE_PATH"
     $EDITOR "$FILE_PATH"
 #    history -s "$EDITOR \"$FILE_PATH\""
