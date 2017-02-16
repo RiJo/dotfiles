@@ -19,6 +19,29 @@ alias grep="grep --color"
 alias less="less -R"
 alias dus="dus --color -h -n"
 
+# Helper function to create a bash script and open it in $EDITOR.
+function mkbash() {
+    if [ -z "$1" ]; then
+        echo "usage: mkbash <filename>" 1>&2
+        return 1
+    fi
+    local FILE_PATH="$1"
+    if [ -e "$FILE_PATH" ]; then
+        echo "file aleady exists: $FILE_PATH" 1>&2
+        return 2
+    fi
+
+    touch "$FILE_PATH"
+    if [ $? -ne 0 ]; then
+        echo "failed to create file: $FILE_PATH" 1>&2
+        return 3
+    fi
+
+    echo "#!/bin/bash" >> "$FILE_PATH"
+    chmod +x "$FILE_PATH"
+    $EDITOR "$FILE_PATH"
+}
+
 # Helper function to open file in $EDITOR for editing and then dump a unified diff.
 function mkpatch() {
     if [ -z "$1" ]; then
