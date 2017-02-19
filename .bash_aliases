@@ -22,7 +22,7 @@ alias dus="dus --color -h -n"
 # Helper function to create a shell script and open it in $EDITOR.
 function mkscript() {
     if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "usage: mkss <shell> <filename>" 1>&2
+        echo "usage: mkscript <shell> [<filename>] [<template>]" 1>&2
         return 1
     fi
 
@@ -36,7 +36,12 @@ function mkscript() {
     if [ -e "$FILE_PATH" ]; then
         echo "file aleady exists: $FILE_PATH" 1>&2
         return 3
+    elif [ -z "$FILE_PATH" ] || [ "$FILE_PATH" == "-" ]; then
+        local FILE_PATH="$(mktemp)"
+        echo "temporary file created: $FILE_PATH"
     fi
+
+    local TEMPLATE="${@:3}"
 
     touch "$FILE_PATH"
     if [ $? -ne 0 ]; then
@@ -45,9 +50,11 @@ function mkscript() {
     fi
 
     echo "#!$SCRIPT_ENV" > "$FILE_PATH"
+    if [ "$TEMPLATE" ]; then
+        printf "$TEMPLATE\n" >> "$FILE_PATH"
+    fi
     chmod +x "$FILE_PATH"
     $EDITOR "$FILE_PATH"
-#    history -s "$EDITOR \"$FILE_PATH\""
 }
 
 # Helper function to create a bash script and open it in $EDITOR.
@@ -57,7 +64,12 @@ function mksh() {
 
 # Helper function to create a bash script and open it in $EDITOR.
 function mkbash() {
-    mkscript /bin/bash $@
+    local TEMPLATE="${@:2}"
+    if [ -z "$TEMPLATE" ]; then
+        local TEMPLATE='\nmain() {\n\treturn 0\n}\n\nmain "$@"\nexit $?\n'
+    fi
+
+    mkscript /bin/bash "$1" "$TEMPLATE"
 }
 
 # Helper function to create a python script and open it in $EDITOR.
