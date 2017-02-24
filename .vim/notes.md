@@ -24,7 +24,16 @@ Jump to end: `e`
 ### Replace <Esc>
 `Ctrl-C`
 
+### Buffers
+List buffers: `:buffers`
+Goto buffer: `:b <id or name>`
+Delete current one: `:bd`
+Close all but current: `:on`
+
 ### Marks
+Upper-case are global and lower-case are per buffer.
+
+List: `:marks`
 Add: `<m[a-zA-Z>`
 Goto: ``[a-zA-Z>`
 
