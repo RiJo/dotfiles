@@ -35,7 +35,11 @@ Upper-case are global and lower-case are per buffer.
 
 List: `:marks`
 Add: `<m[a-zA-Z>`
-Goto: ``[a-zA-Z>`
+Goto: `[a-zA-Z>`
+
+### Undo/redo
+Undo: `u`
+Redo: `<Ctrl>-r`
 
 ### Open other file
 `:e <file>`
