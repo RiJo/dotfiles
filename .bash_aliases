@@ -18,6 +18,8 @@ alias tree="tree -C -A"
 alias grep="grep --color"
 alias less="less -R"
 alias dus="dus --color -h -n"
+alias cal="cal -w -m -3"
+alias shellcheck="shellcheck -Cauto"
 
 # Helper function to create a shell script and open it in $EDITOR.
 function mkscript() {
