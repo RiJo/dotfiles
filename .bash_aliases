@@ -21,6 +21,22 @@ alias dus="dus --color -h -n"
 alias cal="cal -w -m -3"
 alias shellcheck="shellcheck -Cauto"
 
+# Helper function to retrieve user input and filter invalid entries.
+function ask() {
+    local VALID_KEYS=("${@:2}")
+    local MESSAGE="$1 ($(IFS=, ;echo "${VALID_KEYS[*]}")): "
+
+    local KEY=
+    while [ -z "$KEY" ]; do
+        local TEMP
+        read -s -r -p "$MESSAGE" -n 1 TEMP 1>&2
+        for VALID_KEY in ${VALID_KEYS[@]}; do [[ "$VALID_KEY" == "$TEMP" ]] && KEY="$TEMP" && break; done;
+        [[ -z "$KEY" ]] && printf "$TEMP\n" 1>&2
+    done
+    echo $KEY 1>&2
+    echo $KEY
+}
+
 # Helper function to create a shell script and open it in $EDITOR.
 function mkscript() {
     if [ -z "$1" ] || [ -z "$2" ]; then
