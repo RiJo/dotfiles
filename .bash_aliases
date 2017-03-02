@@ -126,7 +126,11 @@ function mkpatch() {
     fi
     diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
 
-    rm -i "$FILE_TO_PATCH.orig" 1>&2
+    case "$(ask "Would you like to [d]elete, [r]estore or [i]gnore $FILE_TO_PATCH.orig?" d r i)" in
+        d) rm -f "$FILE_TO_PATCH.orig" ;;
+        r) mv -f "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" ;;
+        i) ;;
+    esac
 }
 
 # Find first occurence of target in parent directories bottom-up
