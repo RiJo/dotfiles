@@ -24,13 +24,23 @@ alias shellcheck="shellcheck -Cauto"
 # Helper function to retrieve user input and filter invalid entries.
 function ask() {
     local VALID_KEYS=("${@:2}")
+    local DEFAULT_KEY=
+    for KEY_INDEX in $(seq 0 1 ${#VALID_KEYS[@]}); do
+        if [ "${VALID_KEYS[$KEY_INDEX]:0:1}" == '*' ]; then
+            local DEFAULT_KEY="${VALID_KEYS[$KEY_INDEX]:1}"
+            VALID_KEYS[$KEY_INDEX]=$DEFAULT_KEY
+            break
+        fi
+    done
     local MESSAGE="$1 ($(IFS=, ;echo "${VALID_KEYS[*]}")): "
+    [[ "$DEFAULT_KEY" ]] && local MESSAGE="$MESSAGE[$DEFAULT_KEY]"
 
     local KEY=
     while [ -z "$KEY" ]; do
         local TEMP
         read -s -r -p "$MESSAGE" -n 1 TEMP 1>&2
-        for VALID_KEY in ${VALID_KEYS[@]}; do [[ "$VALID_KEY" == "$TEMP" ]] && KEY="$TEMP" && break; done;
+        for VALID_KEY in ${VALID_KEYS[@]}; do [[ "$VALID_KEY" == "$TEMP" ]] && KEY="$TEMP" && break; done
+        [[ -z "$TEMP" ]] && [[ "$DEFAULT_KEY" ]] && KEY="$DEFAULT_KEY" && break
         [[ -z "$KEY" ]] && printf "$TEMP\n" 1>&2
     done
     echo $KEY 1>&2
@@ -126,10 +136,10 @@ function mkpatch() {
     fi
     diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
 
-    case "$(ask "Would you like to [d]elete, [r]estore or [i]gnore $FILE_TO_PATCH.orig?" d r i)" in
+    case "$(ask "Would you like to [d]elete, [r]estore or [k]eep $FILE_TO_PATCH.orig?" d r *k)" in
         d) rm -f "$FILE_TO_PATCH.orig" ;;
         r) mv -f "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" ;;
-        i) ;;
+        k) ;;
     esac
 }
 
