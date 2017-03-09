@@ -134,7 +134,7 @@ function mkpatch() {
     if [ "$OPTIONAL_HEADER" ]; then
         echo "$OPTIONAL_HEADER"
     fi
-    diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
+    diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed -r 's|^--- /?|--- a/|g' | sed -r 's|^\+\+\+ /?|\+\+\+ b/|g'
 
     case "$(ask "Would you like to [d]elete, [r]estore or [k]eep $FILE_TO_PATCH.orig?" d r *k)" in
         d) rm -f "$FILE_TO_PATCH.orig" 1>&2;;
