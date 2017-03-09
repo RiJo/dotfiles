@@ -33,7 +33,7 @@ function ask() {
         fi
     done
     local MESSAGE="$1 ($(IFS=, ;echo "${VALID_KEYS[*]}")): "
-    [[ "$DEFAULT_KEY" ]] && local MESSAGE="$MESSAGE[$DEFAULT_KEY]"
+    [[ "$DEFAULT_KEY" ]] && local MESSAGE="$MESSAGE[$DEFAULT_KEY] "
 
     local KEY=
     while [ -z "$KEY" ]; do
