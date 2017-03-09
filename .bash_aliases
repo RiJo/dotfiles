@@ -137,8 +137,8 @@ function mkpatch() {
     diff -u -s "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" | sed "s|$FILE_TO_PATCH.orig|$FILE_TO_PATCH|g" | sed 's/^--- /--- a\//g' | sed 's/^+++ /+++ b\//g'
 
     case "$(ask "Would you like to [d]elete, [r]estore or [k]eep $FILE_TO_PATCH.orig?" d r *k)" in
-        d) rm -f "$FILE_TO_PATCH.orig" ;;
-        r) mv -f "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" ;;
+        d) rm -f "$FILE_TO_PATCH.orig" 1>&2;;
+        r) mv -f "$FILE_TO_PATCH.orig" "$FILE_TO_PATCH" 1>&2;;
         k) ;;
     esac
 }
