@@ -282,11 +282,15 @@ function ..() {
     if [ -z "$1" ]; then
         cd ..
     elif [[ "$1" =~ [0-9]+ ]]; then
-        for i in $(seq 1 $1); do cd ..; done
+        cd $(for i in $(seq 1 $1); do echo -n '../'; done)
     else
         echo "NaN: $1" 1>&2
         return 1
     fi
+}
+
+function -() {
+    cd -
 }
 
 # "awk '{print 2}'" replaced by "fawk 2"
