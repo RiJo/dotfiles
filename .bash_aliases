@@ -143,6 +143,19 @@ function mkpatch() {
     esac
 }
 
+# Helper function to generate .hash file used by for example buildroot.
+mkhash() {
+    if [ ! -f "$1" ]; then
+        echo "usage: mkhash <target file>" 1>&2
+        return 1
+    fi
+    local TARGET_FILE="$1"
+
+    for HASH_ALGORITHM in md5 sha1 sha256; do
+        echo "$HASH_ALGORITHM $(${HASH_ALGORITHM}sum "$TARGET_FILE")"
+    done
+}
+
 # Find first occurence of target in parent directories bottom-up
 function dir-root() {
     local SOURCE_DIR="$1"
