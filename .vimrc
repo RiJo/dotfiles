@@ -12,9 +12,24 @@ let g:solarized_termtrans=1
 set background=dark
 colorscheme solarized
 
+" Session management
+"set ssop-=options    " do not store global and local values in a session
+"set ssop-=folds      " do not store folds
+let g:session_autosave = 'yes'
+let g:session_autoload = 'yes' " reload 'default' on startup
+" If you only want to save the current tab page:
+"set sessionoptions-=tabpages
+" " If you don't want help windows to be restored:
+"set sessionoptions-=help
+" Don't save hidden and unloaded buffers in sessions.
+"set sessionoptions-=buffers
+
 " Setup shell (bash)
 set shell=/bin/bash
 let $BASH_ENV = "~/.bash_aliases"
+
+" Syntax highlightning fixes
+au FileType perl set filetype=prolog
 
 " Initialize Pathogen
 execute pathogen#infect()
@@ -23,14 +38,16 @@ filetype plugin indent on
 " Initialize Gundo
 let g:gundo_return_on_revert=0
 
-" Initialize minibufexpl
-let g:miniBufExplMapWindowNavVim=1
-let g:miniBufExplMapWindowNavArrows=1
-let g:miniBufExplMapCTabSwitchBufs=1
-let g:miniBufExplModSelTarget=1
+" Initialize wintabs
+let g:wintabs_ui_buffer_name_format = '%n:%t'
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
+
+" Use Ctrl-Alt-Left|Right to switch buffer
+nnoremap <C-A-Right> :WintabsNext<CR>
+nnoremap <C-A-Left> :WintabsPrevious<CR>
+nnoremap <C-W> :WintabsClose<CR>
 
 " Use Shift-Tab to dedent
 inoremap <S-Tab> <C-D>
