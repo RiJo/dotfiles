@@ -8,7 +8,7 @@ fi
 #
 
 export EDITOR="/usr/bin/vim"
-export GEDITOR="/usr/bin/scite"
+export GEDITOR="/usr/bin/gvim"
 export VISUAL="$EDITOR"
 export PAGER="less -R"
 if [ -x "/usr/bin/terminology" ]; then

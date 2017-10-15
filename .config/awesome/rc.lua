@@ -47,7 +47,7 @@ end
 --home_dir="/home/rijo/"
 terminal = os.getenv("TERMINAL") or "xterm"
 editor = os.getenv("EDITOR") or "vim"
-geditor = os.getenv("GEDITOR") or "scite"
+geditor = os.getenv("GEDITOR") or "gvim"
 webbrowser = os.getenv("WEBBROWSER") or "firefox"
 --~ webbrowser = "firefox-bin"
 --~ filebrowser = "rox"

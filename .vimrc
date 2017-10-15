@@ -6,6 +6,7 @@ set cursorline
 set encoding=utf-8
 set listchars=tab:→\ ,trail:·,space:·
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set term=xterm-256color
 syntax enable
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
@@ -40,6 +41,9 @@ let g:gundo_return_on_revert=0
 
 " Initialize wintabs
 let g:wintabs_ui_buffer_name_format = '%n:%t'
+let g:wintabs_ui_modified = '*'
+let g:wintabs_ui_readonly = '!'
+let g:wintabs_ui_sep_rightmost = ' '
 
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
@@ -48,6 +52,7 @@ cmap w!! w !sudo tee > /dev/null %
 nnoremap <C-A-Right> :WintabsNext<CR>
 nnoremap <C-A-Left> :WintabsPrevious<CR>
 nnoremap <C-W> :WintabsClose<CR>
+nnoremap <C-S-W> :WintabsOnly<CR>
 
 " Use Shift-Tab to dedent
 inoremap <S-Tab> <C-D>
