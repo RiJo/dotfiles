@@ -2,7 +2,6 @@
 set t_Co=256
 set confirm
 set number
-set cursorline
 set encoding=utf-8
 set listchars=tab:→\ ,trail:·,space:·
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
@@ -51,8 +50,8 @@ cmap w!! w !sudo tee > /dev/null %
 " Use Ctrl-Alt-Left|Right to switch buffer
 nnoremap <C-A-Right> :WintabsNext<CR>
 nnoremap <C-A-Left> :WintabsPrevious<CR>
-nnoremap <C-W> :WintabsClose<CR>
-nnoremap <C-S-W> :WintabsOnly<CR>
+nnoremap <C-W> :bd<CR>
+"nnoremap <C-S-W> :WintabsOnly<CR>
 
 " Use Shift-Tab to dedent
 inoremap <S-Tab> <C-D>
@@ -78,12 +77,16 @@ vnoremap <Left> <Nop>
 vnoremap <Right> <Nop>
 
 " Use <Alt-Arrows> to move lines around
-nnoremap <Esc>j :m .+1<CR>==
-nnoremap <Esc>k :m .-2<CR>==
-inoremap <Esc>j <Esc>:m .+1<CR>==gi
-inoremap <Esc>k <Esc>:m .-2<CR>==gi
-vnoremap <Esc>j :m '>+1<CR>gv=gv
-vnoremap <Esc>k :m '<-2<CR>gv=gv
+" Follwoing is hack for terminology sending '<Esc>j' instead of '<Alt-j>'
+" Reference: https://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
+execute "set <A-j>=\ej"
+execute "set <A-k>=\ek"
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 " Use <F5> to execute current file
 nnoremap <F5> :!./%<CR>
