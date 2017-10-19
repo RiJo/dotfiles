@@ -9,6 +9,15 @@ Following is a collection of tips and tricks using vim.
 ### Goto line
 `:42`
 
+### Movement
+Next page: `<Ctrl-F>`
+Previous page: `<Ctrl-B>`
+Top of screen: `H`
+Middle of screen: `M`
+Bottom of screen: `L`
+Scroll down (half page): `<Ctrl-D>`
+Scroll up (half page): `<Ctrl-U>`
+
 ### Insert
 Current position: `i` or `I`
 Last on line: `a` or `A`
@@ -16,6 +25,9 @@ New line: `o` or `O`
 
 ### Delete character
 `x`
+
+### Replace character:
+`r`
 
 ### Skip word
 Jump to start: `w`
@@ -78,7 +90,7 @@ To get output to the current window:
 `:r!`
 
 ## Scroll the screen to make this line appear in center
-`zz`
+`zz` or `z.`
 
 Sibling commands:
 `zt`

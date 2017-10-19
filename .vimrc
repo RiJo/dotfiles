@@ -13,10 +13,12 @@ set background=dark
 colorscheme solarized
 
 " Session management
-"set ssop-=options    " do not store global and local values in a session
+set ssop-=options    " do not store global and local values in a session
 "set ssop-=folds      " do not store folds
 let g:session_autosave = 'yes'
 let g:session_autoload = 'yes' " reload 'default' on startup
+let g:session_persist_font = 'no'
+let g:session_persist_colors = 'no'
 " If you only want to save the current tab page:
 "set sessionoptions-=tabpages
 " " If you don't want help windows to be restored:
@@ -44,10 +46,17 @@ let g:wintabs_ui_modified = '*'
 let g:wintabs_ui_readonly = '!'
 let g:wintabs_ui_sep_rightmost = ' '
 
+" plugin comfortable-motion
+let g:comfortable_motion_interval = 1000.0 / 60 " [default: 1000.0 / 60]
+let g:comfortable_motion_friction = 80.0 " [default: 80.0]
+let g:comfortable_motion_air_drag = 2.0 " [default: 2.0]
+
+
 " Allow saving of files as sudo when forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
 " Use Ctrl-Alt-Left|Right to switch buffer
+"execute "set <C-S-W>=\ej"
 nnoremap <C-A-Right> :WintabsNext<CR>
 nnoremap <C-A-Left> :WintabsPrevious<CR>
 nnoremap <C-W> :bd<CR>
@@ -62,9 +71,9 @@ vnoremap <S-Tab> <gv
 nnoremap <C-L> :set nu!<CR>
 
 " Use Ctrl-D to duplicate row(s)
-nnoremap <C-D> :y<CR>mmp`m
-inoremap <C-D> <Esc>:y<CR>p==gi
-vnoremap <C-D> yP
+"nnoremap <C-D> :y<CR>mmp`m
+"inoremap <C-D> <Esc>:y<CR>p==gi
+"vnoremap <C-D> yP
 
 " Disable arrow keys
 nnoremap <Up> <Nop>

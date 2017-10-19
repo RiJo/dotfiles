@@ -19,3 +19,12 @@
 [submodule ".vim/bundle/vim-wintabs"]
 	path = .vim/bundle/vim-wintabs
 	url = https://github.com/zefei/vim-wintabs.git
+[submodule ".vim/bundle/nerdtree"]
+	path = .vim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule ".vim/bundle/vim-commentary"]
+	path = .vim/bundle/vim-commentary
+	url = https://github.com/tpope/vim-commentary.git
+[submodule ".vim/bundle/comfortable-motion.vim"]
+	path = .vim/bundle/comfortable-motion.vim
+	url = https://github.com/yuttie/comfortable-motion.vim.git
