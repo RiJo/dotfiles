@@ -1,33 +1,33 @@
 [alias]
-	lol = log --pretty='format:%C(auto)%h%d [%an] %C(white)%s%C(reset)' --graph --decorate
-	prev = log --numstat -1
-	logc = shortlog -n -s
-	is-repo = !"[ -z \"$(git rev-parse --is-inside-work-tree 2> /dev/null)\" ] && exit 1; echo 'aight'; exit 0"
-	alias = !"~/.scripts/parse-config.sh ~/.gitconfig alias | awk -F' = ' '{ print \"\\033[33m\"$1\"\\033[0m: \"$2; }'"
-	tags = !"sh -c 'git tag | sort -V'"
-	sum = !"f() { [ -z \"$(git is-repo)\" ] && return 1; printf '>>> Branches <<<\n'; git branch -vv; printf '\n>>> Stash <<<\n'; git stash list; printf '\n>>> Status <<<\n'; git status -s -uno; printf '\n>>> Submodules <<<\n'; git submodule status; printf '\n>>> Log <<<\n'; git lol -10 HEAD @{u} 2> /dev/null || git lol -10; }; f"
-	undo-commit = reset --soft HEAD~1
-	drop = reset --hard HEAD
+    lol = log --pretty='format:%C(auto)%h%d [%an, %ar] %C(white)%s%C(reset)' --graph --decorate
+    prev = log --numstat -1
+    logc = shortlog -n -s
+    is-repo = !"[ -z \"$(git rev-parse --is-inside-work-tree 2> /dev/null)\" ] && exit 1; echo 'aight'; exit 0"
+    alias = !"~/.scripts/parse-config.sh ~/.gitconfig alias | awk -F' = ' '{ print \"\\033[33m\"$1\"\\033[0m: \"$2; }'"
+    tags = !"sh -c 'git tag | sort -V'"
+    sum = !"f() { [ -z \"$(git is-repo)\" ] && return 1; printf '>>> Branches <<<\n'; git branch -vv; printf '\n>>> Stash <<<\n'; git stash list; printf '\n>>> Status <<<\n'; git status -s -uno; printf '\n>>> Submodules <<<\n'; git submodule status; printf '\n>>> Log <<<\n'; git lol -10 HEAD @{u} 2> /dev/null || git lol -10; }; f"
+    undo-commit = reset --soft HEAD~1
+    drop = reset --hard HEAD
     unstage = reset HEAD
     pushall = !git remote | xargs -L1 git push
     pullall = !git remote | xargs -L1 git pull
     fetchall = !git remote | xargs -L1 git fetch
     ff = merge --ff-only
-	tag-delete = !"f() { git tag -d "$@" && git push origin :"$@"; }; f"
-	tagger = !"f() { grep \"$1\" \"$3\" &> /dev/null; if [ $? -ne 0 ]; then echo \"Could not find '$1' in file '$3'.\"; exit 1; fi; sed -i -e \"s/$1/$2/g\" \"$3\" && git commit \"$3\" -m \"Bump version: '$2'\" && git tag \"$2\" && sed -i -e \"s/$2/$1/g\" \"$3\" && git commit \"$3\" -m \"Revert version: '$1'\"; }; f $(git rev-parse --abbrev-ref HEAD)"
-	graphviz = !"f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' "$@" | sed 's/[0-9a-f][0-9a-f]*/"&"/g' ; echo '}'; }; f"
+    tag-delete = !"f() { git tag -d "$@" && git push origin :"$@"; }; f"
+    tagger = !"f() { grep \"$1\" \"$3\" &> /dev/null; if [ $? -ne 0 ]; then echo \"Could not find '$1' in file '$3'.\"; exit 1; fi; sed -i -e \"s/$1/$2/g\" \"$3\" && git commit \"$3\" -m \"Bump version: '$2'\" && git tag \"$2\" && sed -i -e \"s/$2/$1/g\" \"$3\" && git commit \"$3\" -m \"Revert version: '$1'\"; }; f $(git rev-parse --abbrev-ref HEAD)"
+    graphviz = !"f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' "$@" | sed 's/[0-9a-f][0-9a-f]*/"&"/g' ; echo '}'; }; f"
     fm = !"git fetch && git merge --ff-only"
     fixup = !sh -c 'REV=$(git rev-parse $1) && git commit --fixup $@ && GIT_EDITOR=true git rebase -i --autosquash $REV^' -
     squash = !sh -c 'REV=$(git rev-parse $1) && git commit --squash $@ && GIT_EDITOR=true git rebase -i --autosquash $REV^' -
 [core]
-	editor = vim
+    editor = vim
 [user]
-	email = rajoo@mail.com
-	name = RiJo
+    email = rajoo@mail.com
+    name = RiJo
 [push]
-	default = simple
+    default = simple
 [color]
-	ui = true
+    ui = true
 [diff]
-	compactionHeuristic = 1
+    compactionHeuristic = 1
 
