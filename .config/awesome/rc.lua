@@ -250,42 +250,42 @@ vicious.register(thermalwidget, vicious.widgets.thermal, function (widget, args)
 end, 18, { "thermal_zone0", "sys"} )
 
 -- Battery widget
-batterywidget = nil
-batteryname = 'BAT0'
-if file_exists('/sys/class/power_supply/' .. batteryname) then
-    batterywidget = wibox.widget.textbox()
-    --vicious.register(batterywidget, vicious.widgets.bat, 'bat: $1$2', 10, 'BAT0')
-    vicious.register(batterywidget, vicious.widgets.bat, function (widget, args)
-        local color = ""
-        if utf8.codepoint(args[1]) == 8722 then
-            -- Discharging
-            if args[2] >= 50 then
-                color = theme.color_label_yellow
-            else
-                color = theme.color_label_red
-            end
-        else
-            -- Charged/charging
-            if args[2] >= 75 then
-                color = theme.color_label_green
-            elseif args[2] <= 10 then
-                color = theme.color_label_yellow
-            else
-                color = theme.color_label_default
-            end
-        end
-        local text = args[1]..args[2]..'%'
-        --local text = args[1]..args[2]..'</span>'..' ('..args[3]..')'
-        if color == "" then
-            return text
-        end
-        return '<span color="'..color..'">'..text..'</span>'
-    end, 23, batteryname)
-end
+--batterywidget = nil
+--batteryname = 'BAT0'
+--if file_exists('/sys/class/power_supply/' .. batteryname) then
+--    batterywidget = wibox.widget.textbox()
+--    --vicious.register(batterywidget, vicious.widgets.bat, 'bat: $1$2', 10, 'BAT0')
+--    vicious.register(batterywidget, vicious.widgets.bat, function (widget, args)
+--        local color = ""
+--        if utf8.codepoint(args[1]) == 8722 then
+--            -- Discharging
+--            if args[2] >= 50 then
+--                color = theme.color_label_yellow
+--            else
+--                color = theme.color_label_red
+--            end
+--        else
+--            -- Charged/charging
+--            if args[2] >= 75 then
+--                color = theme.color_label_green
+--            elseif args[2] <= 10 then
+--                color = theme.color_label_yellow
+--            else
+--                color = theme.color_label_default
+--            end
+--        end
+--        local text = args[1]..args[2]..'%'
+--        --local text = args[1]..args[2]..'</span>'..' ('..args[3]..')'
+--        if color == "" then
+--            return text
+--        end
+--        return '<span color="'..color..'">'..text..'</span>'
+--    end, 23, batteryname)
+--end
 
 -- Packages widget
-pkgwidget = wibox.widget.textbox()
-vicious.register(pkgwidget, vicious.widgets.pkg, 'pkg: $1', 120, 'Arch')
+-- pkgwidget = wibox.widget.textbox()
+-- vicious.register(pkgwidget, vicious.widgets.pkg, 'pkg: $1', 120, 'Arch')
 
 local taglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -396,12 +396,12 @@ awful.screen.connect_for_each_screen(function(s)
 --    right_layout:add(volumewidget)
     right_layout:add(nicwidget)
     --right_layout:add(separator)
-    if batterywidget ~= nil then
-        right_layout:add(batterywidget)
-        right_layout:add(separator)
-    end
-    right_layout:add(pkgwidget)
-    right_layout:add(separator)
+    -- if batterywidget ~= nil then
+    --     right_layout:add(batterywidget)
+    --     right_layout:add(separator)
+    -- end
+    -- right_layout:add(pkgwidget)
+    -- right_layout:add(separator)
     right_layout:add(mytextclock)
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(wibox.widget.systray())
@@ -512,6 +512,7 @@ globalkeys = awful.util.table.join(
 
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({ modkey, "Shift"   }, "s",      function (c) c.sticky = not c.sticky          end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
@@ -527,7 +528,16 @@ clientkeys = awful.util.table.join(
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
             c.maximized_vertical   = not c.maximized_vertical
-        end)
+        end),
+    -- Firefox fix: https://superuser.com/questions/859346/awesomewm-resizing-firefox
+    awful.key({ modkey, "Shift" }, "m",
+        function (c)
+            c.maximized = false
+            c.maximized_vertical=false
+            c.maximized_horizontal=false
+            c:raise()
+        end ,
+        {description = "demaximize", group = "client"})
 )
 
 -- Bind all key numbers to tags.
