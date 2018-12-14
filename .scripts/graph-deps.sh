@@ -7,7 +7,9 @@
 #
 
 # TODO: handle relative paths
-# TODO: strip shared root directory
+# TODO: render varnings: cross deps, dependency on implementation (not abstraction)
+# TODO: render fainted: dependency already added by parent
+# TODO: render abstractions vs. realizations(?)/implementations
 
 main() {
     local TARGET_DIRECTORY="$1"
@@ -26,10 +28,34 @@ main() {
     done
     popd &> /dev/null
 
-    # return 0
+    local ALL_MATCHES="$(echo ${MATCHES[@]} ${!MATCHES[@]} | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
 
     # dot output
     printf "digraph {\n"
+    printf "  rankdir=BT;\n"
+    printf "  clusterrank=none;\n"
+    printf "  ranksep=1.0;\n"
+    printf "  nodesep=1.0;\n"
+    # printf "  rank=max;\n"
+    # printf "  splines=line;\n"
+
+    # implementation
+    printf "  subgraph cluster_0 {\n"
+    printf "    label=\"implementation\";\n"
+    for MATCH in $ALL_MATCHES; do
+        [ "${MATCH##*.}" == "cpp" ] && printf "    \"$MATCH\";\n"
+    done
+    printf "  }\n"
+
+    # abstraction
+    printf "  subgraph cluster_1 {\n"
+    printf "    label=\"abstraction\";\n"
+    for MATCH in $ALL_MATCHES; do
+        [ "${MATCH##*.}" == "hpp" ] && printf "    \"$MATCH\";\n"
+    done
+    printf "  }\n"
+
+    # edges
     for SOURCE in "${!MATCHES[@]}"; do
         printf "  \"$SOURCE\" -> {"
         for TARGET in ${MATCHES[$SOURCE]}; do
