@@ -9,10 +9,31 @@
 # TODO: handle relative paths
 # TODO: render varnings: cross deps, dependency on implementation (not abstraction)
 # TODO: render fainted: dependency already added by parent
-# TODO: render abstractions vs. realizations(?)/implementations
+
+load_test_data() {
+    local TARGET_DIRECTORY="$1"
+    pushd "$TARGET_DIRECTORY" &> /dev/null
+    touch foo.hpp bar.hpp baz.hpp foo.cpp bar.cpp
+    echo "#include \"foo.hpp\"" >> foo.cpp
+    echo "#include \"bar.hpp\"" >> foo.cpp
+    echo "#include \"bar.hpp\"" >> foo.hpp
+    echo "#include \"baz.hpp\"" >> foo.hpp
+    echo "#include \"bar.hpp\"" >> bar.cpp
+    echo "#include \"baz.hpp\"" >> bar.cpp
+    echo "#include \"foo.hpp\"" >> baz.hpp
+    echo "#include <external>" >> baz.hpp
+    popd &> /dev/null
+}
 
 main() {
     local TARGET_DIRECTORY="$1"
+    local TEMP_DIRECTORY=
+    if [ "$TARGET_DIRECTORY" == "--test" ]; then
+        local TEMP_DIRECTORY="$(mktemp -d)"
+        load_test_data "$TEMP_DIRECTORY"
+        local TARGET_DIRECTORY="$TEMP_DIRECTORY"
+        trap "rm -rf \"$TEMP_DIRECTORY\"" EXIT
+    fi
     [ ! -d "$TARGET_DIRECTORY" ] && echo "target directory not found: $TARGET_DIRECTORY" 1>&2 && return 1
 
     # parse
@@ -36,8 +57,6 @@ main() {
     printf "  clusterrank=none;\n"
     printf "  ranksep=1.0;\n"
     printf "  nodesep=1.0;\n"
-    # printf "  rank=max;\n"
-    # printf "  splines=line;\n"
 
     # implementation
     printf "  subgraph cluster_0 {\n"
