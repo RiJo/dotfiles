@@ -6,9 +6,9 @@
 #    $ ./graph-deps.sh /home/user/my-project | dot -Tpng -o/tmp/deps.png
 #
 
+# TODO: handle extensions .c .cpp .cxx .h .hpp .hxx
 # TODO: handle relative paths
-# TODO: render varnings: cross deps, dependency on implementation (not abstraction)
-# TODO: render fainted: dependency already added by parent
+# TODO: render warning: dependency on implementation (not abstraction)
 
 load_test_data() {
     local TARGET_DIRECTORY="$1"
@@ -21,8 +21,36 @@ load_test_data() {
     echo "#include \"bar.hpp\"" >> bar.cpp
     echo "#include \"baz.hpp\"" >> bar.cpp
     echo "#include \"foo.hpp\"" >> baz.hpp
+    echo "#include \"baz.hpp\"" >> baz.hpp
     echo "#include <external>" >> baz.hpp
     popd &> /dev/null
+}
+
+# 0=normal, 1=indirect, 2=same, 3=circular
+find_target() {
+    declare -p REF &> /dev/null || local -n REF="$1"
+    local SOURCE="$2"
+    local TARGET="$3"
+    local DEPS="$4"
+    local HANDLED="$5"
+    # echo "SOURCE=\"$SOURCE\", TARGET=\"$TARGET\", DEPS=\"$DEPS\", HANDLED=\"$HANDLED\""
+    [ "$SOURCE" == "$TARGET" ] && return 0 # reference self
+    for DEP in $DEPS; do
+        [ "$DEP" == "$TARGET" ] && return 0 # found
+
+        CIRCULAR=
+        for TEMP in $HANDLED; do
+            if [ "$DEP" == "$TEMP" ]; then
+               CIRCULAR=1
+               break
+            fi
+        done
+        [ "$CIRCULAR" ] && continue # already handled
+
+        HANDLED+=" $DEP"
+        find_target REF "$SOURCE" "$TARGET" "${REF[$DEP]}" "$HANDLED" && return $?
+    done
+    return 1 # not found
 }
 
 main() {
@@ -62,25 +90,62 @@ main() {
     printf "  subgraph cluster_0 {\n"
     printf "    label=\"implementation\";\n"
     for MATCH in $ALL_MATCHES; do
-        [ "${MATCH##*.}" == "cpp" ] && printf "    \"$MATCH\";\n"
+        [ "${MATCH##*.}" == "cpp" ] && printf "    \"$MATCH\" [shape=box, style=filled, fillcolor=gray94] ;\n"
     done
     printf "  }\n"
 
-    # abstraction
+    # abstraction nodes
     printf "  subgraph cluster_1 {\n"
     printf "    label=\"abstraction\";\n"
     for MATCH in $ALL_MATCHES; do
-        [ "${MATCH##*.}" == "hpp" ] && printf "    \"$MATCH\";\n"
+        [ "${MATCH##*.}" == "hpp" ] && printf "    \"$MATCH\" [shape=ellipse, style=filled, fillcolor=gray94] ;\n"
+    done
+    printf "  }\n"
+
+    # undefined nodes
+    printf "  subgraph cluster_1 {\n"
+    printf "    label=\"abstraction\";\n"
+    for MATCH in $ALL_MATCHES; do
+        [ "${MATCH##*.}" != "hpp" ] && [ "${MATCH##*.}" != "cpp" ] && printf "    \"$MATCH\" [shape=ellipse, style=filled, fillcolor=gray98, color=gray55, fontcolor=gray55] ;\n"
+
     done
     printf "  }\n"
 
     # edges
     for SOURCE in "${!MATCHES[@]}"; do
-        printf "  \"$SOURCE\" -> {"
         for TARGET in ${MATCHES[$SOURCE]}; do
-            printf " \"$TARGET\""
+            if [ "$SOURCE" == "$TARGET" ]; then
+                printf "  \"$SOURCE\" -> \"$TARGET\" [color=red];\n" # self dependency
+                continue
+            fi
+
+            find_target MATCHES "$TARGET" "$SOURCE" "${MATCHES[$TARGET]}"
+            if [ $? -eq 0 ]; then
+                printf "  \"$SOURCE\" -> \"$TARGET\" [color=red];\n" # circular dependency
+                continue
+            fi
+
+            local OTHER_TARGETS=""
+            for OTHER_TARGET in ${MATCHES[$SOURCE]}; do
+                [ "$OTHER_TARGET" != "$TARGET" ] && OTHER_TARGETS+=" $OTHER_TARGET"
+            done
+
+            find_target MATCHES "$SOURCE" "$TARGET" "$OTHER_TARGETS" "$SOURCE"
+            if [ $? -eq 0 ]; then
+                # found in other (longer) branch
+                if [ "${SOURCE%.*}" == "${TARGET%.*}" ]; then
+                    printf "  \"$SOURCE\" -> \"$TARGET\" [style=dashed, color=blue];\n" # same name: implementation of abstraction
+                else
+                    printf "  \"$SOURCE\" -> \"$TARGET\" [style=dashed, color=gray55];\n"
+                fi
+            else
+                if [ "${SOURCE%.*}" == "${TARGET%.*}" ]; then
+                    printf "  \"$SOURCE\" -> \"$TARGET\" [color=blue];\n" # same name: implementation of abstraction
+                else
+                    printf "  \"$SOURCE\" -> \"$TARGET\";\n"
+                fi
+            fi
         done
-        printf " };\n"
     done
     echo "}"
 }
