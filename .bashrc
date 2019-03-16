@@ -16,7 +16,9 @@ if [ -x "/usr/bin/terminology" ]; then
 else
     export TERMINAL="/usr/bin/xterm"
 fi
-if [ -x "/usr/bin/firefox-bin" ]; then
+if [ -x "/usr/bin/firefox-developer-edition" ]; then
+    export WEBBROWSER="/usr/bin/firefox-developer-edition"
+elif [ -x "/usr/bin/firefox-bin" ]; then
     export WEBBROWSER="/usr/bin/firefox-bin"
 else
     export WEBBROWSER="/usr/bin/firefox"
