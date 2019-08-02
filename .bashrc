@@ -175,13 +175,18 @@ set_bash_prompt() {
 
     source /usr/share/git/completion/git-prompt.sh
 
-    export PS1="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR}${BLUE}\$(__git_ps1)${NO_COLOR}\`${PS_EXIT_CODE}\` \$"
-    export PS2="${WHITE}[${GREEN}\W${WHITE}]${NO_COLOR} >"
+    if [ "$(whoami)" == "root" ]; then
+        local USER_COLOR="$RED"
+    else
+        local USER_COLOR="$GREEN"
+    fi
+    export PS1="${WHITE}[${USER_COLOR}\W${WHITE}]${NO_COLOR}${BLUE}\$(__git_ps1)${NO_COLOR}\`${PS_EXIT_CODE}\` \$"
+    export PS2="${WHITE}[${USER_COLOR}\W${WHITE}]${NO_COLOR} >"
 }
 set_bash_prompt
 
 # Start X client
-if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
+if [ "$(whoami)" != "root" ] && [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
     # X is not running
     startx -- vt1; exit
     logout
