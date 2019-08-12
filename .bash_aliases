@@ -17,6 +17,7 @@ alias mkdir="mkdir -p"
 alias tree="tree -C -A"
 alias grep="grep --color"
 alias less="less -R"
+alias make='make -j$(getconf _NPROCESSORS_ONLN)'
 alias dus="dus --color -h -n"
 alias cal="cal -w -m -3"
 alias shellcheck="shellcheck -Cauto"
